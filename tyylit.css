@@ -1,0 +1,25 @@
+/*Kaikki*/
+* {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; 
+}
+
+/*Header banneri tyylit*/
+#cellar_header {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(138, 138, 238);
+    border-bottom: 3px rgb(0, 0, 0) solid;
+    font-size: 30px;
+    text-align: center;
+}
+
+/*Muut tänne, tämän kommentin voi poistaa kun tässä kohdin sisältöä, 15. ja alaspäin. AL 23.9.2025*/
