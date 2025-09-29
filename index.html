@@ -7,13 +7,18 @@
     <link rel="stylesheet" href="tyylit.css">
     <title>Cellar Game Title</title>
 </head>
-<body>    
+<body id="body_page01">    
     <main>
-        <header id="cellar_header">Cellar-Game</header>        
-        <div id="cellar_game_div">
-            <canvas id="canvas01" width="1550" height="1200"></canvas>
+        <header id="cellar_header">Cellar-Game</header>
+        <!--<button id="start_game" onclick="startTest()" type="button">Pelaa</button>-->
+
+        <div id="cellar_game_div" style="display: block;"> <!--none is default-->
+            <canvas id="canvas01" width="1550" height="1550"></canvas>
         </div>
     </main>
-    <script src="JS-file.js"></script>
+    <script src="Canvas.js"></script>
+    <script src="Logic.js"></script>
+    <script src="main.js"></script>
+
 </body>
 </html>

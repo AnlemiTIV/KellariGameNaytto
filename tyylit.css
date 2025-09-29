@@ -3,7 +3,6 @@
     padding: 0;
     margin: 0;
     overflow: hidden;
-
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -12,14 +11,47 @@
     user-select: none; 
 }
 
+body {
+    box-sizing: border-box;
+    background-color: rgb(120, 120, 120);
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
 /*Header banneri tyylit*/
 #cellar_header {
+    height: 40px;
     width: 100%;
     padding: 10px;
     background-color: rgb(138, 138, 238);
     border-bottom: 3px rgb(0, 0, 0) solid;
+    margin: 0px;
     font-size: 30px;
     text-align: center;
 }
 
 /*Muut tänne, tämän kommentin voi poistaa kun tässä kohdin sisältöä, 15. ja alaspäin. AL 23.9.2025*/
+
+/*Pelaa-button, saa pelin esille. Voi kommentoida jos häiritsee testatessa*/
+#start_game {
+    position: absolute;
+    top: 43%;
+    right: 44%;
+    left: 44%;
+    width: 200px;
+    height: 150px;
+    padding: 30px;
+    font-size: 29px;
+    background-color: rgb(148, 165, 221);
+    color: black;
+    border-radius: 40px;
+    cursor: pointer;
+    border: 3px white solid;
+}
+
+#start_game:active {
+    background-color: rgb(112, 125, 169);
+    transform: translateY(3px);
+    box-shadow: 0 2px #ffffff;
+}
