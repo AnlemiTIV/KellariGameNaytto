@@ -6,6 +6,7 @@ let ctx = canvas01.getContext("2d");
 const img01 = new Image();
 const img02 = new Image();
 const imgMixed = new Image();
+const imgboss = new Image();
 
 let testPois = 0;
 let testPois2 = 0;
@@ -17,21 +18,31 @@ let inventory = [0, 0, 0, 0, 0, 0, 0];
 let canvasWidth = canvas01.width;
 let canvasHeight = canvas01.height;
 
-//Image 01 location data
-const image_one_location = {
-    x: (canvasWidth/2 - 120),
-    y: 150,
-    width: 230,
-    height: 230 
-}
+//Location data
+const locations = {
+    Img1: {
+        x: (canvasWidth/2 - 120),
+        y: 150,
+        width: 230,
+        height: 230 
+    },
 
-// Image 02 location data (esim. oikealle item_01:stä)
-const image_two_location = {
-    x: (canvasWidth/2 + 120),
-    y: 150,
-    width: 230,
-    height: 230
-}
+    // Image 02 location data (esim. oikealle item_01:stä)
+    Img2: {
+        x: (canvasWidth/2 + 120),
+        y: 150,
+        width: 230,
+        height: 230
+    },
+
+    boss: {
+        x: (canvasWidth/2 - 150),
+        y: 20,
+        width: 300,
+        height: 200,
+        alive: true
+    }
+};
 
 img01.onload = function() {
     refreshCanvas();
@@ -40,6 +51,10 @@ img02.onload = function() {
     refreshCanvas();
 }
 imgMixed.src = "kuvat/Mixed_01.png";
+
+imgboss.onload = function() {
+    refreshCanvas();
+}
 
 function refreshCanvas() {
     //resetoi canvas
@@ -59,12 +74,17 @@ function refreshCanvas() {
 
     // Piirrä item_01, jos sitä ei ole otettu
     if (testPois === 0){
-        ctx.drawImage(img01, image_one_location.x, image_one_location.y, image_one_location.width, image_one_location.height);
+        ctx.drawImage(img01, locations.Img1.x, locations.Img1.y, locations.Img1.width, locations.Img1.height);
     }
     // Piirrä item_02, jos sitä ei ole otettu
     if (testPois2 === 0){
-        ctx.drawImage(img02, image_two_location.x, image_two_location.y, image_two_location.width, image_two_location.height);
+        ctx.drawImage(img02, locations.Img2.x, locations.Img2.y, locations.Img2.width, locations.Img2.height);
     }
+    // Piirrä boss
+    if (locations.boss.alive) {
+        ctx.drawImage(imgboss, locations.boss.x, locations.boss.y, locations.boss.width, locations.boss.height);
+    }
+
 
     // Piirrä inventaarion esineet
     let invIndex = 0;
@@ -127,6 +147,8 @@ canvas01.addEventListener("click", (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
+    
+
     // Yhdistys-napin alue
     if (
         mixBtnArea &&
@@ -145,10 +167,10 @@ canvas01.addEventListener("click", (e) => {
     // item_01
     if (
         testPois === 0 &&
-        mouseX >= image_one_location.x &&
-        mouseX <= image_one_location.x + image_one_location.width &&
-        mouseY >= image_one_location.y &&
-        mouseY <= image_one_location.y + image_one_location.height
+        mouseX >= locations.Img1.x &&
+        mouseX <= locations.Img1.x + locations.Img1.width &&
+        mouseY >= locations.Img1.y &&
+        mouseY <= locations.Img1.y + locations.Img1.height
     ){
         testPois = 1;
         inventory.push("kuva01");
@@ -159,17 +181,33 @@ canvas01.addEventListener("click", (e) => {
     // item_02
     if (
         testPois2 === 0 &&
-        mouseX >= image_two_location.x &&
-        mouseX <= image_two_location.x + image_two_location.width &&
-        mouseY >= image_two_location.y &&
-        mouseY <= image_two_location.y + image_two_location.height
+        mouseX >= locations.Img2.x &&
+        mouseX <= locations.Img2.x + locations.Img2.width &&
+        mouseY >= locations.Img2.y &&
+        mouseY <= locations.Img2.y + locations.Img2.height
     ){
         testPois2 = 1;
         inventory.push("item02");
         refreshCanvas();
         return;
     }
+
+    // Boss Poisto test
+    if (
+        mouseX >= locations.boss.x &&
+        mouseX <= locations.boss.x + locations.boss.width &&
+        mouseY >= locations.boss.y &&
+        mouseY <= locations.boss.y + locations.boss.height
+    ){
+        inventory = inventory.filter(item => item !== "MixTest");
+        locations.boss.alive = false;
+        
+        refreshCanvas();
+        return;
+    }
+
 });
 
 img01.src = "kuvat/Item_01.png";
 img02.src = "kuvat/Item_02.png";
+imgboss.src = "kuvat/Boss_01.png";
