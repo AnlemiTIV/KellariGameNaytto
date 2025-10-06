@@ -90,6 +90,7 @@ function refreshCanvas() {
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
         let item = inventory[i];
+       
         if (item === "kuva01") {
             ctx.drawImage(img01, (invIndex * 110) + 215, 615, 120, 120);
             invIndex++;
@@ -100,6 +101,7 @@ function refreshCanvas() {
             ctx.drawImage(imgMixed, (invIndex * 110) + 215, 615, 120, 120);
             invIndex++;
         }
+      
         // Lisää muita esineitä tarvittaessa
     }
 
@@ -198,9 +200,11 @@ canvas01.addEventListener("click", (e) => {
         mouseX <= locations.boss.x + locations.boss.width &&
         mouseY >= locations.boss.y &&
         mouseY <= locations.boss.y + locations.boss.height
+        && inventory.includes("MixTest")
     ){
         inventory = inventory.filter(item => item !== "MixTest");
         locations.boss.alive = false;
+        console.log("Bossi on voitettu!");
         
         refreshCanvas();
         return;
