@@ -14,6 +14,16 @@ let testPois2 = 0;
 //Globaali tavaravarasto, missä esineet pidetään.
 let inventory = [0, 0, 0, 0, 0, 0, 0];
 
+//9.10.2025 - Is mixingWindoe open, sen slotit, mixing tulos¨
+// **********
+// ****AL****
+// **********
+let isMixingWindowOpen = false; //tällä voi säätää kaiken muun pimentämistä ja klikattavuutta
+let mixingWindowSlots = [null, null, null, null];
+let mixingResult = null;
+//***********************
+
+
 //Canvas leveys ja pituus
 let canvasWidth = canvas01.width;
 let canvasHeight = canvas01.height;
@@ -62,6 +72,25 @@ function refreshCanvas() {
     //Canvas tausta 
     ctx.fillStyle = "rgba(124, 124, 124, 1)";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    //9.10.2025, MixausWindow testi
+    //Luo uuden mixaus buttonin, ja jos siitä klikataan canvas01.addEventListener:in
+    //sisällä, kutsuu se funktiota, mikä Itsessään sijaitsee mixing_window.js
+    //tiedostossa, missä se window piirretään
+    // **********
+    // ****AL****
+    // **********  
+    if (isMixingWindowOpen === false){
+        ctx.fillStyle = "#65649fff";
+        ctx.fillRect(1340, 610, 130, 120);
+        ctx.fillStyle = "#6f6eacff";
+        ctx.fillRect(1350, 617, 110, 105);
+        ctx.fillStyle = "#000";
+        ctx.font = "22px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Mixaus", 1404, 670);
+    }
 
     //draw inventory, rect, outer + inner + move right and repeat from start
     for (let i = 0; i < 8; i++) {
@@ -140,6 +169,7 @@ function drawMixButton() {
     mixBtnArea = { x: btnX, y: btnY, w: btnWidth, h: btnHeight };
 }
 
+
 // Poista vanhat click-listenerit (ettei tule tuplaklikkauksia)
 canvas01.replaceWith(canvas01.cloneNode(true));
 canvas01 = document.getElementById("canvas01");
@@ -148,8 +178,28 @@ ctx = canvas01.getContext("2d");
 canvas01.addEventListener("click", (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
-
     
+    //AL 10.10.25
+    //Jos Mixaus painista painetaan inventorin vieressä, siirrytään
+    //Mixaus ikkunaan
+    //1340, 610, 130, 120);
+
+    if (
+        isMixingWindowOpen === false &&
+        mouseX >= 1340 &&
+        mouseX <= 1340 + 130 &&
+        mouseY >= 610 &&
+        mouseY <= 610 + 120
+    ) {
+        if (typeof createMixingWindow === "function") {
+            
+            isMixingWindowOpen === true;
+            createMixingWindow();
+        }
+        return;
+    }
+
+    /// ********************************************************************
 
     // Yhdistys-napin alue
     if (
