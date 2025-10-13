@@ -209,7 +209,7 @@ canvas01.addEventListener("click", (e) => {
         mouseY >= mixBtnArea.y &&
         mouseY <= mixBtnArea.y + mixBtnArea.h
     ) {
-        if (typeof tryMix === "function") {
+        if (typeof tryMix === "function" && isMixingWindowOpen === false) {
             tryMix();
             refreshCanvas();
         }
@@ -224,10 +224,13 @@ canvas01.addEventListener("click", (e) => {
         mouseY >= locations.Img1.y &&
         mouseY <= locations.Img1.y + locations.Img1.height
     ){
-        testPois = 1;
-        inventory.push("kuva01");
-        refreshCanvas();
-        return;
+        if (isMixingWindowOpen === false){
+            testPois = 1;
+            inventory.push("kuva01");
+            refreshCanvas();
+            return;
+        }
+
     }
 
     // item_02
@@ -238,10 +241,13 @@ canvas01.addEventListener("click", (e) => {
         mouseY >= locations.Img2.y &&
         mouseY <= locations.Img2.y + locations.Img2.height
     ){
-        testPois2 = 1;
-        inventory.push("item02");
-        refreshCanvas();
-        return;
+        if (isMixingWindowOpen === false){
+            testPois2 = 1;
+            inventory.push("item02");
+            refreshCanvas();
+            return;
+        }
+
     }
 
     // Boss Poisto test
@@ -252,12 +258,16 @@ canvas01.addEventListener("click", (e) => {
         mouseY <= locations.boss.y + locations.boss.height
         && inventory.includes("MixTest")
     ){
-        inventory = inventory.filter(item => item !== "MixTest");
-        locations.boss.alive = false;
-        console.log("Bossi on voitettu!");
+
+        if (isMixingWindowOpen === false){
+            inventory = inventory.filter(item => item !== "MixTest");
+            locations.boss.alive = false;
+            console.log("Bossi on voitettu!");
         
-        refreshCanvas();
-        return;
+            refreshCanvas();
+            return;
+        }
+
     }
 
 });
