@@ -3,14 +3,12 @@
 //Tällä luodaan uusi ikkuna missä esineiden mixaus tehdään, mistä voi myös poistua takaisin defaultti pelin näkymään
 function createMixingWindow(){
 
-    //Ruudun tyhjennys koska uudessa ikkunassa, ehkä ei paras mutta joissakin
-    //peleissä tehdään sama juttu reppujen tai karttojen kanssa joten ihan sama
+    //Ruudun tyhjennys koska uudessa ikkunassa
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     ctx.fillStyle = "rgba(92, 90, 90, 1)";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     //Pohja ikkuna
-
     ctx.fillStyle = "rgba(0, 0, 0, 1)"
     ctx.fillRect(315, 96, 900, 605);
     ctx.fillStyle = "rgba(137, 128, 173, 1)"
@@ -20,7 +18,6 @@ function createMixingWindow(){
     //Width, Height OG 810,561 and 798, 550 //add 30 to each
 
     //inventory
-    
     for (let i = 0; i < 6; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
@@ -31,7 +28,6 @@ function createMixingWindow(){
     }
 
     //Poistu-painike
-
     ctx.fillStyle = "rgba(0,0,0, 1)";
     ctx.fillRect(345, 110, 110, 50);
     ctx.fillStyle = "rgba(204, 89, 133, 1)";
@@ -42,7 +38,6 @@ function createMixingWindow(){
 
 
     //inventory esineet
-
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
         let item = inventory[i];
@@ -68,18 +63,17 @@ function createMixingWindow(){
     ctx.fillRect(680, 599, 170, 60);
     ctx.fillStyle = "rgba(0,0,0, 1)";
     ctx.font = "30px Arial";
-    ctx.fillText("Sekoita", 760, 627);
+    ctx.fillText("Sekoita", 764, 627);
     ctx.font = "22px Arial";
 
 
     //Poistuminen takaisin pelin defaultti näkymään
-
     canvas01.addEventListener("click", (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
     if (
-        isMixingWindowOpen === false &&
+        isMixingWindowOpen === true &&
         mouseX >= 345 &&
         mouseX <= 345 + 110 &&
         mouseY >= 110 &&
@@ -87,11 +81,10 @@ function createMixingWindow(){
 
         if (typeof refreshCanvas === "function") {
             
-            isMixingWindowOpen === false;
+            isMixingWindowOpen = false;
             refreshCanvas();
         }
         return;
     }
     });
-
 }

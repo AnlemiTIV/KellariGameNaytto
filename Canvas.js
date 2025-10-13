@@ -193,7 +193,7 @@ canvas01.addEventListener("click", (e) => {
     ) {
         if (typeof createMixingWindow === "function") {
             
-            isMixingWindowOpen === true;
+            isMixingWindowOpen = true;
             createMixingWindow();
         }
         return;
