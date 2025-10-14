@@ -1,9 +1,9 @@
 
-
 //Tällä luodaan uusi ikkuna missä esineiden mixaus tehdään, mistä voi myös poistua takaisin defaultti pelin näkymään
 function createMixingWindow(){
 
-    //Ruudun tyhjennys koska uudessa ikkunassa
+    //Ruudun tyhjennys koska uudessa ikkunassa, ehkä ei paras mutta joissakin
+    //peleissä tehdään sama juttu reppujen tai karttojen kanssa joten ihan sama
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     ctx.fillStyle = "rgba(92, 90, 90, 1)";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -17,7 +17,7 @@ function createMixingWindow(){
     //315 + 6 = 321 with inner color
     //Width, Height OG 810,561 and 798, 550 //add 30 to each
 
-    //inventory
+    //inventory    
     for (let i = 0; i < 6; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
@@ -26,6 +26,34 @@ function createMixingWindow(){
         ctx.fillRect((i * 135) + 360, 470, 120, 95);
         
     }
+
+    //3 Slottia
+    for (let i = 0; i < 3; i++){
+        ctx.fillStyle = "rgba(146, 192, 204, 1)";
+        ctx.beginPath();
+        ctx.fillRect((i * 175) + 370, 250, 148, 127);
+        ctx.fillStyle = "rgba(122, 140, 143, 1)";
+        ctx.fillRect((i * 175) + 380, 260, 128, 107);
+    }
+
+    //Nuoli oikeaan suuntaan
+    ctx.beginPath();
+    ctx.lineWidth = 6;
+    ctx.moveTo(888, 297); //OG 900, 297 //muutos 888, 297
+    ctx.lineTo(888, 336); //900, 336
+    ctx.lineTo(928, 336); //940, 336
+    ctx.lineTo(928, 357); //940, 357
+    ctx.lineTo(974, 318); //986, 318
+    ctx.lineTo(928, 278); //940, 278
+    ctx.lineTo(928, 297); //940, 297
+    ctx.closePath();
+    ctx.stroke();
+
+    //tulos slot
+    ctx.fillStyle = "rgba(146, 192, 204, 1)";
+    ctx.fillRect((628 + 370), 250, 148, 127)
+    ctx.fillStyle = "rgba(122, 140, 143, 1)";
+    ctx.fillRect((628 + 380), 260, 128, 107);
 
     //Poistu-painike
     ctx.fillStyle = "rgba(0,0,0, 1)";
@@ -87,4 +115,5 @@ function createMixingWindow(){
         return;
     }
     });
+
 }
