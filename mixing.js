@@ -8,7 +8,7 @@ class Recipe {
 }
 // Reseptit 
 const recipes = [
-    new Recipe(["kuva01", "item02"], "MixTest"),
+    new Recipe(["Item_01", "Item_02"], "MixTest"),
     new Recipe(["juusto", "leipa"], "nami")             
 ];
 
@@ -21,7 +21,7 @@ function canMix(ingredients) {
 function removeIngredients(ingredients) {
     ingredients.forEach(item => {
         const idx = inventory.indexOf(item);
-        if (idx > -1) inventory.splice(idx, 1);
+        if (idx > -1) inventory[idx] = 0;
     });
 }
 
@@ -30,7 +30,8 @@ function tryMix() {
     for (const recipe of recipes) {
         if (canMix(recipe.ingredients)) {
             removeIngredients(recipe.ingredients);
-            inventory.push(recipe.result);
+            inventory.unshift(recipe.result);
+            useless = inventory.pop();
             console.log("Miksasit:", recipe.ingredients.join(" + "), "->", recipe.result);
             return recipe.result;
         }

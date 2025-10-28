@@ -7,22 +7,28 @@ const img01 = new Image();
 const img02 = new Image();
 const imgMixed = new Image();
 const imgboss = new Image();
+const imgavain = new Image();
 
 let testPois = 0;
 let testPois2 = 0;
+let useless;
+
+// 0----w
+let avainHallussa = false; //Jos true, avain piirretään näkyville ja jota tarvitaan ovelle, jos true, oven klikatessa
+//päästään erilaiseen Canvas.js tiedostoon (taso 2), tämän tiedoston voi kopioida, tosin joitain asioita muutettava
+//esim musiikki, kuvat, tausta, inventori esineet ja niiden sijoitukset. Mutta tämä vasta kun mixing_window tietyssä vaiheessa
+//Ja luultavasti mixing_window:ille omat JS tiedot, tai yksinkertaisesti erilaiset "else if" ehdot jonka mukaan
+//piirretään/lisätään erilaiset inventori esineet, ilman että tarvitaan 3 uutta JS tiedostoa
+
+//> mutta, kun sirrytään uuteen JS tiedostoon, html lienee sama, mutta siirrytään joko erilliseen JS tiedostoon,
+//tai erilliseen html tiedostoon, tästä vielä varmistettava chatgpt:ltä, mikä ideaalisempaa, mättää kaikki JS tiedostot
+//samaan html tiedostoon, vai oltava sekä eri/uusi html ja js tiedosto?
 
 //Globaali tavaravarasto, missä esineet pidetään.
-let inventory = [0, 0, 0, 0, 0, 0, 0];
+let inventory = [0, 0, 0, 0, 0, 0]; //6 loppuversiossa, pitänee käyttää mixing_windowissa omaa?
 
-//9.10.2025 - Is mixingWindoe open, sen slotit, mixing tulos¨
-// **********
-// ****AL****
-// **********
+//9.10.2025 AL - Is mixingWindow open, sen slotit, mixing tulos¨
 let isMixingWindowOpen = false; //tällä voi säätää kaiken muun pimentämistä ja klikattavuutta
-let mixingWindowSlots = [null, null, null, null];
-let mixingResult = null;
-//***********************
-
 
 //Canvas leveys ja pituus
 let canvasWidth = canvas01.width;
@@ -66,6 +72,10 @@ imgboss.onload = function() {
     refreshCanvas();
 }
 
+imgavain.onload = function() {
+    refreshCanvas();
+}
+
 function refreshCanvas() {
     //resetoi canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -73,13 +83,9 @@ function refreshCanvas() {
     ctx.fillStyle = "rgba(124, 124, 124, 1)";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    //9.10.2025, MixausWindow testi
+    //9.10.2025 AL, mixing_window.js testi
     //Luo uuden mixaus buttonin, ja jos siitä klikataan canvas01.addEventListener:in
-    //sisällä, kutsuu se funktiota, mikä Itsessään sijaitsee mixing_window.js
-    //tiedostossa, missä se window piirretään
-    // **********
-    // ****AL****
-    // **********  
+    //sisällä, kutsuu se funktiota, mikä Itsessään sijaitsee mixing_window.js tiedostossa, missä se window piirretään
     if (isMixingWindowOpen === false){
         ctx.fillStyle = "#65649fff";
         ctx.fillRect(1340, 610, 130, 120);
@@ -93,7 +99,7 @@ function refreshCanvas() {
     }
 
     //draw inventory, rect, outer + inner + move right and repeat from start
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < inventory.length; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
         ctx.fillRect((i * 110) + 215, 620, 320, 110);
@@ -114,16 +120,21 @@ function refreshCanvas() {
         ctx.drawImage(imgboss, locations.boss.x, locations.boss.y, locations.boss.width, locations.boss.height);
     }
 
+    //Piirrä avain inventorin ulkopuolelle
+    if (avainHallussa === true){
+        ctx.drawImage(imgavain, 90, 629, 95, 95);
+    }
+
 
     // Piirrä inventaarion esineet
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
         let item = inventory[i];
        
-        if (item === "kuva01") {
+        if (item === "Item_01") {
             ctx.drawImage(img01, (invIndex * 110) + 215, 615, 120, 120);
             invIndex++;
-        } else if (item === "item02") {
+        } else if (item === "Item_02") {
             ctx.drawImage(img02, (invIndex * 110) + 215, 615, 120, 120);
             invIndex++;
         } else if (item === "MixTest") {
@@ -136,7 +147,7 @@ function refreshCanvas() {
 
     // Piirrä yhdistys-nappi canvasin päälle
     drawMixButton();
-}
+} //refreshCanvas ending bracket
 
 // Yhdistys-napin piirto
 function drawMixButton() {
@@ -167,29 +178,49 @@ function drawMixButton() {
 
     
     mixBtnArea = { x: btnX, y: btnY, w: btnWidth, h: btnHeight };
-}
+} //drawMixButton ending bracket
 
 
-// Poista vanhat click-listenerit (ettei tule tuplaklikkauksia)
-canvas01.replaceWith(canvas01.cloneNode(true));
-canvas01 = document.getElementById("canvas01");
-ctx = canvas01.getContext("2d");
+// Poista vanhat click-listenerit (ettei tule tuplaklikkauksia) //28.10.25 kommentoin tämän jotta tämänhetkinen koodi toimisi
+//canvas01.replaceWith(canvas01.cloneNode(true));
+//canvas01 = document.getElementById("canvas01");
+//ctx = canvas01.getContext("2d");
 
 canvas01.addEventListener("click", (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
-    
-    //AL 10.10.25
-    //Jos Mixaus painista painetaan inventorin vieressä, siirrytään
-    //Mixaus ikkunaan
+
+    //************************************************
+    // Ehdotukset chatgpt:ltä, varmuuden vuoksi jos jotain hyötyä, muussa tapauksessa voi poistaa
+
+    //const rect = canvas01.getBoundingClientRect();
+    //const scaleX = canvas01.width / rect.width;
+    //const scaleY = canvas01.height / rect.height;
+
+    //const mouseX = (e.clientX - rect.left) * scaleX;
+    //const mouseY = (e.clientY - rect.top) * scaleY;
+    //************************************************
+
+    //AL 10.10.25 - Jos Mixaus painikkeesta painetaan inventorin vieressä, siirrytään Mixaus ikkunaan
     //1340, 610, 130, 120);
 
+    if (isMixingWindowOpen === false) {
+        handleFirstScreen(mouseX, mouseY);
+    } else {
+        if (!isMixingWindowOpen) return;
+        handleMixingScreen(mouseX, mouseY);
+    }
+}); //canvas01.addEventListener ending bracket
+
+function handleFirstScreen(x, y){
+    
+    //siirtyminen mixing_window.js:ään
     if (
         isMixingWindowOpen === false &&
-        mouseX >= 1340 &&
-        mouseX <= 1340 + 130 &&
-        mouseY >= 610 &&
-        mouseY <= 610 + 120
+        x >= 1340 &&
+        x <= 1340 + 130 &&
+        y >= 610 &&
+        y <= 610 + 120
     ) {
         if (typeof createMixingWindow === "function") {
             
@@ -199,15 +230,13 @@ canvas01.addEventListener("click", (e) => {
         return;
     }
 
-    /// ********************************************************************
-
     // Yhdistys-napin alue
     if (
         mixBtnArea &&
-        mouseX >= mixBtnArea.x &&
-        mouseX <= mixBtnArea.x + mixBtnArea.w &&
-        mouseY >= mixBtnArea.y &&
-        mouseY <= mixBtnArea.y + mixBtnArea.h
+        x >= mixBtnArea.x &&
+        x <= mixBtnArea.x + mixBtnArea.w &&
+        y >= mixBtnArea.y &&
+        y <= mixBtnArea.y + mixBtnArea.h
     ) {
         if (typeof tryMix === "function" && isMixingWindowOpen === false) {
             tryMix();
@@ -216,17 +245,19 @@ canvas01.addEventListener("click", (e) => {
         return;
     }
 
+
     // item_01
     if (
         testPois === 0 &&
-        mouseX >= locations.Img1.x &&
-        mouseX <= locations.Img1.x + locations.Img1.width &&
-        mouseY >= locations.Img1.y &&
-        mouseY <= locations.Img1.y + locations.Img1.height
+        x >= locations.Img1.x &&
+        x <= locations.Img1.x + locations.Img1.width &&
+        y >= locations.Img1.y &&
+        y <= locations.Img1.y + locations.Img1.height
     ){
         if (isMixingWindowOpen === false){
             testPois = 1;
-            inventory.push("kuva01");
+            inventory.unshift("Item_01");
+            useless = inventory.pop();
             refreshCanvas();
             return;
         }
@@ -236,14 +267,15 @@ canvas01.addEventListener("click", (e) => {
     // item_02
     if (
         testPois2 === 0 &&
-        mouseX >= locations.Img2.x &&
-        mouseX <= locations.Img2.x + locations.Img2.width &&
-        mouseY >= locations.Img2.y &&
-        mouseY <= locations.Img2.y + locations.Img2.height
+        x >= locations.Img2.x &&
+        x <= locations.Img2.x + locations.Img2.width &&
+        y >= locations.Img2.y &&
+        y <= locations.Img2.y + locations.Img2.height
     ){
         if (isMixingWindowOpen === false){
             testPois2 = 1;
-            inventory.push("item02");
+            inventory.unshift("Item_02");
+            useless = inventory.pop();
             refreshCanvas();
             return;
         }
@@ -252,26 +284,100 @@ canvas01.addEventListener("click", (e) => {
 
     // Boss Poisto test
     if (
-        mouseX >= locations.boss.x &&
-        mouseX <= locations.boss.x + locations.boss.width &&
-        mouseY >= locations.boss.y &&
-        mouseY <= locations.boss.y + locations.boss.height
+        x >= locations.boss.x &&
+        x <= locations.boss.x + locations.boss.width &&
+        y >= locations.boss.y &&
+        y <= locations.boss.y + locations.boss.height
         && inventory.includes("MixTest")
     ){
-
+        
         if (isMixingWindowOpen === false){
             inventory = inventory.filter(item => item !== "MixTest");
             locations.boss.alive = false;
             console.log("Bossi on voitettu!");
+            inventory.unshift(0);
+            //AL 25.10.25. Tässä todennäköisesti aktivoidaan muttujan arvo, mikä lisää avaimen käyttöön
+            //Ja tällä avaimella, saadaan muutokset aikaan kun ovesta painetaan, mikä vie meidät erilaiseen tasoon
+            avainHallussa = true;
         
             refreshCanvas();
             return;
         }
 
     }
+} //handleFirstScreen ending bracket
 
-});
+function handleMixingScreen(x, y){
+    console.log(x, y);
+
+    //Poistuminen, siirtyminen pelin defaultti näkymään    
+    if (
+        x >= 345 &&
+        x <= 345 + 110 &&
+        y >= 110 &&
+        y <= 110 + 50
+    ) {
+        if (isMixingWindowOpen === true && typeof refreshCanvas === "function") {
+            isMixingWindowOpen = false;
+            refreshCanvas();
+        }
+        return;
+    }
+    
+    //Inventorin slotista mixaus slottiin //(i * 135) + 350, 460, 140, 115 inventori slotin koordinaatit
+    for (let i = 0; i < inventory.length; i++){
+        let x2 = (i * 135) + 360; //(i * 135) + 360, 470, 120, 95)
+        let y2 = 470
+        
+        if (
+            x >= x2 && //485
+            x <= x2 + 120 && //275 
+            y >= y2 &&
+            y <= y2 + 95)
+            {
+                if (inventory[i] !== 0){
+                    
+                    const emptyIndex = mixingSlots.findIndex(s => s === 0);
+                    if (emptyIndex !== -1){
+                        mixingSlots[emptyIndex] = inventory[i];
+                        inventory[i] = 0;
+                        //mixingLimit++
+                        createMixingWindow();
+                    }
+                    return;
+                }
+            }
+            
+        }
+        
+    // Mixaus slotista takaisin inventoriin  // (i * 175) + 370, 250, 148, 127);
+    for (let i = 0; i < mixingSlots.length; i++){
+        let x3 = (i * 175) + 380; //((i * 175) + 380, 260, 128, 107);
+        let y3 = 260
+        
+        if (
+            x >= x3 &&
+            x <= x3 + 128 &&
+            y >= y3 &&
+            y <= y3 + 107)
+            {
+                if (mixingSlots[i] !== 0){
+                    
+                    const emptyIndex2 = inventory.findIndex(s => s === 0);
+                    if (emptyIndex2 !== -1){
+                        inventory[emptyIndex2] = mixingSlots[i];
+                        mixingSlots[i] = 0;
+                        //mixingLimit++
+                        createMixingWindow();
+                    }
+                    return;
+                }
+            }
+        }
+
+} //handleMixingScreen ending bracket
 
 img01.src = "kuvat/Item_01.png";
 img02.src = "kuvat/Item_02.png";
 imgboss.src = "kuvat/Boss_01.png";
+imgavain.src = "kuvat/key_item.png";
