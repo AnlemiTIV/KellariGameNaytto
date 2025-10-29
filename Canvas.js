@@ -24,6 +24,12 @@ let avainHallussa = false; //Jos true, avain piirretään näkyville ja jota tar
 //tai erilliseen html tiedostoon, tästä vielä varmistettava chatgpt:ltä, mikä ideaalisempaa, mättää kaikki JS tiedostot
 //samaan html tiedostoon, vai oltava sekä eri/uusi html ja js tiedosto?
 
+let tasoNumero = 1; //kenties voi käyttää tämänkaltaista esineiden, inventorin loopatessa? Voisi
+//päivittää joka kerta kun ovesta klikataan ja avain on hallussa? Ehkä? arvona 2 kun 2. tasossa jne
+//if (avainHallussa === true)...tämän voisi lisätä jos oven koordinaattia klikataan,
+//tätä mukaa sitten muistettava että "locations" voisi myös päivittää, kentän omille esineille omat
+//ID tai tunnisteet, joiden avulla voi loopata huoletta kentän numerosta riippuen? Tosin vielä työn alla
+
 //Globaali tavaravarasto, missä esineet pidetään.
 let inventory = [0, 0, 0, 0, 0, 0]; //6 loppuversiossa, pitänee käyttää mixing_windowissa omaa?
 
@@ -146,7 +152,7 @@ function refreshCanvas() {
     }
 
     // Piirrä yhdistys-nappi canvasin päälle
-    drawMixButton();
+    //drawMixButton();
 } //refreshCanvas ending bracket
 
 
@@ -199,9 +205,6 @@ function handleFirstScreen(x, y){
         }
         return;
     }
-
-
-
 
     // item_01
     if (
