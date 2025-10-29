@@ -149,36 +149,6 @@ function refreshCanvas() {
     drawMixButton();
 } //refreshCanvas ending bracket
 
-// Yhdistys-napin piirto
-function drawMixButton() {
-    ctx.save();
-    // Lasketaan viimeisen slotin oikea reuna
-    const slotX = (7 * 72) + 215 + 225; // 7. slotin vasen + slotin sisäosan left offset
-    const slotY = 627;
-    const slotWidth = 300;
-    const slotHeight = 95;
-
-    // Nappi slotin sisälle (pienempi kuin slot)
-    const btnWidth = 180;
-    const btnHeight = 40;
-    const btnX = slotX + slotWidth - btnWidth - 10; // 10px marginaali oikeasta reunasta
-    const btnY = slotY + slotHeight/2 - btnHeight/2;
-
-    ctx.fillStyle = "#8ad";
-    ctx.strokeStyle = "#fff";
-    ctx.lineWidth = 3;
-    ctx.fillRect(btnX, btnY, btnWidth, btnHeight);
-    ctx.strokeRect(btnX, btnY, btnWidth, btnHeight);
-    ctx.fillStyle = "#000";
-    ctx.font = "22px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("Yhdistys test", btnX + btnWidth/2, btnY + btnHeight/2);
-    ctx.restore();
-
-    
-    mixBtnArea = { x: btnX, y: btnY, w: btnWidth, h: btnHeight };
-} //drawMixButton ending bracket
 
 
 // Poista vanhat click-listenerit (ettei tule tuplaklikkauksia) //28.10.25 kommentoin tämän jotta tämänhetkinen koodi toimisi
@@ -230,20 +200,7 @@ function handleFirstScreen(x, y){
         return;
     }
 
-    // Yhdistys-napin alue
-    if (
-        mixBtnArea &&
-        x >= mixBtnArea.x &&
-        x <= mixBtnArea.x + mixBtnArea.w &&
-        y >= mixBtnArea.y &&
-        y <= mixBtnArea.y + mixBtnArea.h
-    ) {
-        if (typeof tryMix === "function" && isMixingWindowOpen === false) {
-            tryMix();
-            refreshCanvas();
-        }
-        return;
-    }
+
 
 
     // item_01
@@ -305,7 +262,7 @@ function handleFirstScreen(x, y){
         }
 
     }
-} //handleFirstScreen ending bracket
+} 
 
 function handleMixingScreen(x, y){
     console.log(x, y);
@@ -375,7 +332,7 @@ function handleMixingScreen(x, y){
             }
         }
 
-} //handleMixingScreen ending bracket
+}
 
 img01.src = "kuvat/Item_01.png";
 img02.src = "kuvat/Item_02.png";
