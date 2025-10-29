@@ -96,7 +96,7 @@ function createMixingWindow() {
             ctx.textAlign = "center";
             ctx.fillText(String(mixingResult), resultInnerX + resultInnerW / 2, resultInnerY + resultInnerH / 2);
         }
-    }
+    } //if mixingResult ending bracket
 
     //Poistu-painike 
     ctx.fillStyle = "rgba(0,0,0, 1)";
