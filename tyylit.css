@@ -11,6 +11,27 @@
     user-select: none; 
 }
 
+/* Keskitetään canvas näytölle */
+#cellar_game_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Vähennä headerin korkeutta jos tarvitsee: header on ~40px + padding */
+    height: calc(100vh - 60px);
+    width: 100%;
+}
+
+/*Canvasin tyyli (säilytä aiemmat asetukset)*/
+#canvas01 {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+    /* Halutessa lisää varjoa/kehystä */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* loppu tiedoston olemassaolevista tyyleistä... */
 body {
     box-sizing: border-box;
     background-color: rgb(120, 120, 120);

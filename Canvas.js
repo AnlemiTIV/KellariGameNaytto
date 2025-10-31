@@ -2,12 +2,16 @@
 let body = document.width
 
 let canvas01 = document.getElementById("canvas01");
+let canvasWidth = canvas01.width;
+let canvasHeight = canvas01.height;
 let ctx = canvas01.getContext("2d");
 const img01 = new Image();
 const img02 = new Image();
 const imgMixed = new Image();
 const imgboss = new Image();
 const imgavain = new Image();
+const imgBackground = new Image();
+
 
 let testPois = 0;
 let testPois2 = 0;
@@ -33,12 +37,13 @@ let tasoNumero = 1; //kenties voi käyttää tämänkaltaista esineiden, invento
 //Globaali tavaravarasto, missä esineet pidetään.
 let inventory = [0, 0, 0, 0, 0, 0]; //6 loppuversiossa, pitänee käyttää mixing_windowissa omaa?
 
+// Lisätty: inventoryn vasemman reunan perus-x (vähentää kovakoodattuja +215 jne.)
+const inventoryBaseX = 90; // aiemmin käytettiin 215
+
 //9.10.2025 AL - Is mixingWindow open, sen slotit, mixing tulos¨
 let isMixingWindowOpen = false; //tällä voi säätää kaiken muun pimentämistä ja klikattavuutta
 
-//Canvas leveys ja pituus
-let canvasWidth = canvas01.width;
-let canvasHeight = canvas01.height;
+
 
 //Location data
 const locations = {
@@ -63,8 +68,21 @@ const locations = {
         width: 300,
         height: 200,
         alive: true
-    }
+    },
+
+    background: {
+        x: 0,
+        y: 0,
+        width: canvasWidth,
+        height: canvasHeight
+    },
+
+
 };
+
+imgBackground.onload = function() {
+    refreshCanvas();
+}
 
 img01.onload = function() {
     refreshCanvas();
@@ -85,32 +103,34 @@ imgavain.onload = function() {
 function refreshCanvas() {
     //resetoi canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-    //Canvas tausta 
-    ctx.fillStyle = "rgba(124, 124, 124, 1)";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    //Canvas tausta
+    ctx.drawImage(imgBackground, 0, 0, canvasWidth, canvasHeight);
+
 
     //9.10.2025 AL, mixing_window.js testi
     //Luo uuden mixaus buttonin, ja jos siitä klikataan canvas01.addEventListener:in
     //sisällä, kutsuu se funktiota, mikä Itsessään sijaitsee mixing_window.js tiedostossa, missä se window piirretään
     if (isMixingWindowOpen === false){
+       
         ctx.fillStyle = "#65649fff";
-        ctx.fillRect(1340, 610, 130, 120);
+        ctx.fillRect(840, 610, 130, 120);
         ctx.fillStyle = "#6f6eacff";
-        ctx.fillRect(1350, 617, 110, 105);
+        ctx.fillRect(850, 617, 110, 105);
         ctx.fillStyle = "#000";
         ctx.font = "22px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("Mixaus", 1404, 670);
+        ctx.fillText("Mixaus", 840 + 65, 610 + 60);
     }
 
     //draw inventory, rect, outer + inner + move right and repeat from start
     for (let i = 0; i < inventory.length; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
-        ctx.fillRect((i * 110) + 215, 620, 320, 110);
+        ctx.fillRect((i * 110) + inventoryBaseX, 620, 120, 110);
         ctx.fillStyle = "rgba(122, 140, 143, 1)";
-        ctx.fillRect((i * 110) + 225, 627, 300, 95);
+        ctx.fillRect((i * 110) + inventoryBaseX + 10, 627, 100, 95);
+        
     }
 
     // Piirrä item_01, jos sitä ei ole otettu
@@ -126,9 +146,10 @@ function refreshCanvas() {
         ctx.drawImage(imgboss, locations.boss.x, locations.boss.y, locations.boss.width, locations.boss.height);
     }
 
+
     //Piirrä avain inventorin ulkopuolelle
     if (avainHallussa === true){
-        ctx.drawImage(imgavain, 90, 629, 95, 95);
+        ctx.drawImage(imgavain, 90, 529, 95, 95);
     }
 
 
@@ -138,13 +159,13 @@ function refreshCanvas() {
         let item = inventory[i];
        
         if (item === "Item_01") {
-            ctx.drawImage(img01, (invIndex * 110) + 215, 615, 120, 120);
+            ctx.drawImage(img01, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
             invIndex++;
         } else if (item === "Item_02") {
-            ctx.drawImage(img02, (invIndex * 110) + 215, 615, 120, 120);
+            ctx.drawImage(img02, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
             invIndex++;
         } else if (item === "MixTest") {
-            ctx.drawImage(imgMixed, (invIndex * 110) + 215, 615, 120, 120);
+            ctx.drawImage(imgMixed, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
             invIndex++;
         }
       
@@ -153,7 +174,7 @@ function refreshCanvas() {
 
     // Piirrä yhdistys-nappi canvasin päälle
     //drawMixButton();
-} //refreshCanvas ending bracket
+} 
 
 
 
@@ -186,15 +207,15 @@ canvas01.addEventListener("click", (e) => {
         if (!isMixingWindowOpen) return;
         handleMixingScreen(mouseX, mouseY);
     }
-}); //canvas01.addEventListener ending bracket
+}); 
 
 function handleFirstScreen(x, y){
     
     //siirtyminen mixing_window.js:ään
     if (
         isMixingWindowOpen === false &&
-        x >= 1340 &&
-        x <= 1340 + 130 &&
+        x >= 840 &&
+        x <= 840 + 130 &&
         y >= 610 &&
         y <= 610 + 120
     ) {
@@ -339,5 +360,6 @@ function handleMixingScreen(x, y){
 
 img01.src = "kuvat/Item_01.png";
 img02.src = "kuvat/Item_02.png";
-imgboss.src = "kuvat/Boss_01.png";
+imgboss.src = "kuvat/taso_1_kuvat/Boss_01.png";
 imgavain.src = "kuvat/key_item.png";
+imgBackground.src = "kuvat/taso_1_kuvat/Taso_1.png";

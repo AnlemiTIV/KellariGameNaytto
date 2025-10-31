@@ -16,27 +16,42 @@ let img01_mixing_index = 0;
 
 //Tällä luodaan uusi ikkuna missä esineiden mixaus tehdään, mistä voi myös poistua takaisin defaultti pelin näkymään
 function createMixingWindow() {
-    //Ruudun tyhjennys koska uudessa ikkunassa, yleinen tapa peleissä
+    //Ruudun tyhjennys koska uudessa ikkunassa, yleinen tapa peleiss
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillStyle = "rgba(92, 90, 90, 1)";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+    //Miksausikkunan koko ja sijainti 
+    const mixWinW = 900;
+    const mixWinH = 605;
+    const mixWinX = Math.round((canvasWidth - mixWinW) / 2); // Keskitetään vaakasuunnassa
+    const mixWinY = Math.round((canvasHeight - mixWinH) / 2); // Keskitetään pystysuunnassa
+
     //Pohja ikkuna
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
-    ctx.fillRect(315, 96, 900, 605);
+    ctx.fillRect(mixWinX, mixWinY, mixWinW, mixWinH);
     ctx.fillStyle = "rgba(137, 128, 173, 1)";
-    ctx.fillRect(321, 101, 888, 595);
+    ctx.fillRect(mixWinX + 6, mixWinY + 5, mixWinW - 12, mixWinH - 10);
     //X = -40 > 315 (360 og)
     //315 + 6 = 321 with inner color
     //Width, Height OG 810,561 and 798, 550 //add 30 to each
+
+    //peruskoordinaatit suhteessa mix-ikkunaan 
+    const invBaseX = mixWinX + 35;  
+    const invBaseY = mixWinY + 364;  
+    const invSlotW = 140;
+    const invSlotH = 115;
+
+    const mixSlotsBaseX = mixWinX + 55; 
+    const mixSlotsBaseY = mixWinY + 154;
 
     //inventory    
     for (let i = 0; i < inventory.length; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
-        ctx.fillRect((i * 135) + 350, 460, 140, 115);
+        ctx.fillRect((i * 135) + invBaseX, invBaseY, invSlotW, invSlotH);
         ctx.fillStyle = "rgba(122, 140, 143, 1)";
-        ctx.fillRect((i * 135) + 360, 470, 120, 95);
+        ctx.fillRect((i * 135) + invBaseX + 10, invBaseY + 10, 120, 95);
         ctx.closePath();
     }
 
@@ -44,37 +59,40 @@ function createMixingWindow() {
     for (let i = 0; i < mixingSlots.length; i++) {
         ctx.fillStyle = "rgba(146, 192, 204, 1)";
         ctx.beginPath();
-        ctx.fillRect((i * 175) + 370, 250, 148, 127);
+        ctx.fillRect((i * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
         ctx.fillStyle = "rgba(122, 140, 143, 1)";
-        ctx.fillRect((i * 175) + 380, 260, 128, 107);
+        ctx.fillRect((i * 175) + mixSlotsBaseX + 10, mixSlotsBaseY + 10, 128, 107);
         ctx.closePath();
     }
 
     //Nuoli oikeaan suuntaan
-    ctx.save();
     ctx.beginPath();
     ctx.lineWidth = 6;
-    ctx.moveTo(888, 297); //OG 900, 297 //muutos 888, 297
-    ctx.lineTo(888, 336); //900, 336
-    ctx.lineTo(928, 336); //940, 336
-    ctx.lineTo(928, 357); //940, 357
-    ctx.lineTo(974, 318); //986, 318
-    ctx.lineTo(928, 278); //940, 278
-    ctx.lineTo(928, 297); //940, 297
+    const arrowOffsets = { x: 573, y: 201 }; // alkuperäisten (888,297) - (315,96)
+    // Kuka olisi luullut että nuolen pienentämistä on näin hauskaa
+    ctx.moveTo(mixWinX + arrowOffsets.x, mixWinY + arrowOffsets.y);
+    ctx.lineTo(mixWinX + arrowOffsets.x, mixWinY + arrowOffsets.y + 39);
+    ctx.lineTo(mixWinX + arrowOffsets.x + 40, mixWinY + arrowOffsets.y + 39);
+    ctx.lineTo(mixWinX + arrowOffsets.x + 40, mixWinY + arrowOffsets.y + 60);
+    ctx.lineTo(mixWinX + arrowOffsets.x + 90, mixWinY + arrowOffsets.y + 19);
+    ctx.lineTo(mixWinX + arrowOffsets.x + 40, mixWinY + arrowOffsets.y - 25);
+    ctx.lineTo(mixWinX + arrowOffsets.x + 40, mixWinY + arrowOffsets.y);
     ctx.closePath();
     ctx.stroke();
     ctx.restore();
     ctx.beginPath(); //Reset
 
-    //tulos slot
+    //tulos slot 
+    const resultOuterX = mixWinX + 683; // alkuperäinen (628 + 370) - 315 = 683
+    const resultOuterY = mixWinY + 154; // alkuperäinen 250 - 96 = 154
     ctx.fillStyle = "rgba(146, 192, 204, 1)";
-    ctx.fillRect((628 + 370), 250, 148, 127);
+    ctx.fillRect(resultOuterX, resultOuterY, 148, 127);
     ctx.fillStyle = "rgba(122, 140, 143, 1)";
-    ctx.fillRect((628 + 380), 260, 128, 107);
+    ctx.fillRect(resultOuterX + 10, resultOuterY + 10, 128, 107);
 
     // Piirrä sekoitus-tulos, jos sekoitettu
-    const resultInnerX = (628 + 380);
-    const resultInnerY = 260;
+    const resultInnerX = resultOuterX + 10;
+    const resultInnerY = resultOuterY + 10;
     const resultInnerW = 128;
     const resultInnerH = 107;
 
@@ -96,98 +114,95 @@ function createMixingWindow() {
             ctx.textAlign = "center";
             ctx.fillText(String(mixingResult), resultInnerX + resultInnerW / 2, resultInnerY + resultInnerH / 2);
         }
-    } //if mixingResult ending bracket
+    }
 
     //Poistu-painike 
+    const exitX = mixWinX + 30; // alkuperäinen 345 = 315 + 30
+    const exitY = mixWinY + 14; // alkuperäinen 110 = 96 + 14
     ctx.fillStyle = "rgba(0,0,0, 1)";
-    ctx.fillRect(345, 110, 110, 50);
+    ctx.fillRect(exitX, exitY, 110, 50);
     ctx.fillStyle = "rgba(204, 89, 133, 1)";
     ctx.beginPath();
-    ctx.fillRect(350, 115, 100, 40);
+    ctx.fillRect(exitX + 5, exitY + 5, 100, 40);
     ctx.fillStyle = "rgba(0,0,0, 1)";
-    ctx.fillText("Exit", 400, 135);
+    ctx.fillText("Exit", exitX + 55, exitY + 25);
+
+    // Tallennetaan exit-alue globaaliksi
+    window.exitBtnArea = { x: exitX, y: exitY, w: 110, h: 50 };
 
     //inventory esineet //sijoita paikoilleen oikein
     let invIndex2nd = 0;
     for (let i = 0; i < inventory.length; i++) {
         let item = inventory[i];
-        //((i * 135) + 350, 460, 140, 115); Sijainnit missä sekoitus_window:in inventori slotit on
+        //((i * 135) + invBaseX, invBaseY, 140, 115); Sijainnit missä sekoitus_window:in inventori slotit on
 
         if (item === "Item_01") {
-            ctx.drawImage(img01, (invIndex2nd * 135) + 360, 459, 115, 115);
+            ctx.drawImage(img01, (invIndex2nd * 135) + invBaseX + 10, invBaseY - 1, 115, 115);
             img01_index = invIndex2nd;
             invIndex2nd++;
         } else if (item === "Item_02") {
-            ctx.drawImage(img02, (invIndex2nd * 135) + 355, 453, 125, 125);
+            ctx.drawImage(img02, (invIndex2nd * 135) + invBaseX + 5, invBaseY - 7, 125, 125);
             img02_index = invIndex2nd;
             invIndex2nd++;
         } else if (item === "MixTest") {
-            ctx.drawImage(imgMixed, (invIndex2nd * 135) + 355, 453, 125, 125);
+            ctx.drawImage(imgMixed, (invIndex2nd * 135) + invBaseX + 5, invBaseY - 7, 125, 125);
             invIndex2nd++;
         }
     }
 
-    //Piirretään inventorin esine mixing slotteihin jos ne näkyvät niiden muuttujissa
-    //Tällä hetkellä ei toimi, piirtää jos mitään tavallisessa inventorissa, aina img02
-    //Ei ilmeisesti edes päästä täyttämään ehtoja ja silti asiat tulee piirrettyä?
-
+    // inventorin esine mixing slotteihin jos ne näkyvät niiden muuttujissa
     let mixSlotsIndex = 0;
     for (let i = 0; i < mixingSlots.length; i++) {
         let item2 = mixingSlots[i];
 
-        if (item2 === "Item_01") { //(i * 175) + 370, 250, 148, 127);
-            ctx.drawImage(img01, (mixSlotsIndex * 175) + 370, 250, 148, 127);
+        if (item2 === "Item_01") {
+            ctx.drawImage(img01, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
             mixSlotsIndex++;
-            //mixingLimit++;
         } else if (item2 === "Item_02") {
-            ctx.drawImage(img02, (mixSlotsIndex * 175) + 370, 250, 148, 127);
+            ctx.drawImage(img02, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
             mixSlotsIndex++;
-            //mixingLimit++;
         } else if (item2 === "MixTest") {
-            ctx.drawImage(imgMixed, (mixSlotsIndex * 175) + 370, 250, 148, 127);
+            ctx.drawImage(imgMixed, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
             mixSlotsIndex++;
         }
     }
 
     //Sekoita-painike
+    const sekoitaX = mixWinX + 360; // alkuperäinen 675 = 315 + 360
+    const sekoitaY = mixWinY + 498; // alkuperäinen 594 = 96 + 498
     ctx.fillStyle = "rgba(0,0,0, 1)";
-    ctx.fillRect(675, 594, 180, 70);
+    ctx.fillRect(sekoitaX, sekoitaY, 180, 70);
     ctx.fillStyle = "rgba(89, 131, 204, 1)";
     ctx.beginPath();
-    ctx.fillRect(680, 599, 170, 60);
+    ctx.fillRect(sekoitaX + 5, sekoitaY + 5, 170, 60);
     ctx.fillStyle = "rgba(0,0,0, 1)";
     ctx.font = "30px Arial";
-    ctx.fillText("Sekoita", 764, 627);
+    ctx.fillText("Sekoita", sekoitaX + 89, sekoitaY + 33);
     ctx.font = "22px Arial";
 
     // Sekoita-painikkeen alue globaliksi, klikkauksessa voidaan tunnistaa
-    window.sekoitaBtnArea = { x: 675, y: 594, w: 180, h: 70 };
+    window.sekoitaBtnArea = { x: sekoitaX, y: sekoitaY, w: 180, h: 70 };
 
     // result-slotin alue (varmistus jos ei määritelty aiemmin)
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
 
-    //Vianratkaisua varten, mihin piirretään clickboxit?
-    //ctx.strokeStyle = "red";
-    //ctx.lineWidth = 2;
-    //for (let i = 0; i < 6; i++) {
-        //ctx.strokeRect((i * 135) + 350, 460, 140, 115);
-    //}
-    //for (let i = 0; i < 3; i++) {
-        //ctx.strokeRect((i * 175) + 370, 250, 148, 127);
-    //}
+    // Tallennetaan inventori ja mix-slot -peruskoordinaatit klikkitarkistuksia varten
+    window.mixWindowData = {
+        invBaseX, invBaseY,
+        mixSlotsBaseX, mixSlotsBaseY
+    };
 
-} //createMixingWindow ending bracket
+} 
 
 function handleMixingScreen(x, y) {
     console.log(x, y);
 
     //Poistuminen, siirtyminen pelin defaultti näkymään    
-    if (
-        x >= 345 &&
-        x <= 345 + 110 &&
-        y >= 110 &&
-        y <= 110 + 50
-    ) {
+    if (window.exitBtnArea &&
+        x >= window.exitBtnArea.x &&
+        x <= window.exitBtnArea.x + window.exitBtnArea.w &&
+        y >= window.exitBtnArea.y &&
+        y <= window.exitBtnArea.y + window.exitBtnArea.h) {
         if (isMixingWindowOpen === true && typeof refreshCanvas === "function") {
             isMixingWindowOpen = false;
             refreshCanvas();
@@ -224,6 +239,9 @@ function handleMixingScreen(x, y) {
         return;
     }
 
+
+
+    //AS: Tämä koodi tehty tekoälyllä, voi sisältää virheitä. Koodi korjaa tavarat, että ei ole painamattomia kuvia. 
     // Sekoita-painikkeen käsittely. 
     if (window.sekoitaBtnArea &&
         x >= window.sekoitaBtnArea.x &&
@@ -231,15 +249,15 @@ function handleMixingScreen(x, y) {
         y >= window.sekoitaBtnArea.y &&
         y <= window.sekoitaBtnArea.y + window.sekoitaBtnArea.h) {
 
-        // Käytetään recipes, canMixFromSlots ja removeIngredientsFromSlots (mixing.js)
+
         if (typeof recipes !== "undefined") {
             for (const recipe of recipes) {
                 if (typeof canMixFromSlots === "function" && canMixFromSlots(recipe.ingredients)) {
-                    // Poistetaan ainesosat mixingSlots:ista ja laitetaan tulos tulosslotiin
+
                     if (typeof removeIngredientsFromSlots === "function") {
                         removeIngredientsFromSlots(recipe.ingredients);
                     } else {
-                        // varmuus: poista suoraan mixingSlots jos funktiota ei löydy
+
                         for (const ing of recipe.ingredients) {
                             const idx = mixingSlots.indexOf(ing);
                             if (idx !== -1) mixingSlots[idx] = 0;
@@ -247,7 +265,6 @@ function handleMixingScreen(x, y) {
                     }
                     mixingResult = recipe.result;
                     mixingScreenResult[0] = recipe.result;
-                    // Päivitä näkymä näyttämään tulosslotti
                     createMixingWindow();
                     return;
                 }
@@ -257,11 +274,12 @@ function handleMixingScreen(x, y) {
         return;
     }
 
-    //AS: Tämä koodi tehty tekoälyllä, voi sisältää virheitä. Koodi korjaa tavarat, että ei ole painamattomia kuvia. 
-    //Inventorin slotista mixaus slottiin //(i * 135) + 350, 460, 140, 115 inventori slotin koordinaatit
+    //Inventorista mixaus slottiin
+    const invBase = window.mixWindowData ? window.mixWindowData.invBaseX : (350);
+    const invBaseY = window.mixWindowData ? window.mixWindowData.invBaseY : (460);
     for (let i = 0; i < inventory.length; i++) {
-        let x2 = (i * 135) + 360;
-        let y2 = 470;
+        let x2 = (i * 135) + invBase;
+        let y2 = invBaseY + 0; // säilytä sama offset
 
         if (
             x >= x2 &&
@@ -274,7 +292,6 @@ function handleMixingScreen(x, y) {
                 if (emptyIndex !== -1) {
                     mixingSlots[emptyIndex] = inventory[i];
                     inventory[i] = 0;
-                    // varmista että slotit ovat kompaktit vasempaan
                     if (typeof compactMixingSlots === "function") compactMixingSlots();
                     createMixingWindow();
                 }
@@ -284,9 +301,11 @@ function handleMixingScreen(x, y) {
     }
 
     // Mixaus slotista takaisin inventoriin
+    const mixBaseX = window.mixWindowData ? window.mixWindowData.mixSlotsBaseX : (370);
+    const mixBaseY = window.mixWindowData ? window.mixWindowData.mixSlotsBaseY : (250);
     for (let i = 0; i < mixingSlots.length; i++) {
-        let x3 = (i * 175) + 380;
-        let y3 = 260;
+        let x3 = (i * 175) + mixBaseX;
+        let y3 = mixBaseY;
 
         if (
             x >= x3 &&
@@ -294,13 +313,11 @@ function handleMixingScreen(x, y) {
             y >= y3 &&
             y <= y3 + 107
         ) {
-            // Jos slotissa on esine, siirrä se inventoriin
             if (mixingSlots[i] !== 0) {
                 const emptyIndex2 = inventory.findIndex(s => s === 0);
                 if (emptyIndex2 !== -1) {
                     inventory[emptyIndex2] = mixingSlots[i];
                     mixingSlots[i] = 0;
-                    // kompaktataan slotit poistamisen jälkeen
                     if (typeof compactMixingSlots === "function") compactMixingSlots();
                     createMixingWindow();
                 }
