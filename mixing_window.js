@@ -229,7 +229,6 @@ function createMixingWindow() {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         // valkoinen kehys ja kuva
-        ctx.fillStyle = "rgba(255,255,255,0.95)";
         ctx.fillRect(ox, oy, ow, oh);
         if (formulaImg && formulaImg.complete) {
             ctx.drawImage(formulaImg, ox + 10, oy + 10, ow - 20, oh - 20);
