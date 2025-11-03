@@ -4,6 +4,7 @@ let testPois2 = 0;
 let useless;
 
 // Avain tilanne ja taosnumero jolla siirrytään tasosta seuraavaan // 0----w
+let formulaHallussa = false;
 let avainHallussa = false; 
 let tasoNumero = 1; 
 let inNextLevel = false; //mustalle ruudulle, on "true" sen aikana kun ovesta klikataan, menee "false" kun refreshCanvasissa
@@ -75,11 +76,14 @@ function refreshCanvas() {
     if (stageNow.images[1].obtained !== 1){
         ctx.drawImage(stageNow.images[1].value, stageNow.images[1].x, stageNow.images[1].y, stageNow.images[1].width, stageNow.images[1].height);
     }
+     // Piirrä item_03 (formula). Pitäisi muuttaa myöhemmin omaan kuin images
+    if (stageNow.images[2] && stageNow.images[2].obtained !== 1){
+        ctx.drawImage(stageNow.images[2].value, stageNow.images[2].x, stageNow.images[2].y, stageNow.images[2].width, stageNow.images[2].height);
+    }
     // Piirrä boss
     if (stageNow.boss.alive) { //`item_${item_number}`)
         ctx.drawImage(stageNow.boss.value, stageNow.boss.x, stageNow.boss.y, stageNow.boss.width, stageNow.boss.height);
     }
-
 
     //Piirrä avain inventorin ulkopuolelle
     if (avainHallussa === true){
@@ -161,6 +165,11 @@ function handleFirstScreen(x, y){
             inventory.unshift(item.name);
             useless = inventory.pop();
             item.obtained = 1;
+
+            if (item.name === "form_paperi") {
+                formulaHallussa = true;
+            }
+
             refreshCanvas();
             return;
         }
@@ -203,6 +212,7 @@ function handleFirstScreen(x, y){
         tasoNumero++;
         inventory = [0, 0, 0, 0, 0, 0];
         avainHallussa = false;
+        formulaHallussa = false;
         refreshCanvas();
         }
     } 

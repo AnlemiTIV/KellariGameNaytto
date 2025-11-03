@@ -13,6 +13,11 @@ const imgBackground = new Image();
 const imgBackground2 = new Image();
 const imgBackground3 = new Image();
 const imgBackground4 = new Image();
+const imgformula = new Image();
+// Lisätty: erilliset formula-kuvat tasoille (Taso1Formula, Taso2Formula, Taso3Formula)
+const imgFormula1 = new Image();
+const imgFormula2 = new Image();
+const imgFormula3 = new Image();
 /* const imgboss2 = new Image();
 const img03 //kenttä 2
 const img04 = new Image();
@@ -86,11 +91,12 @@ const locations = {
             id: 1,
             background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground},
             music: "tba",
-            boss: { x: 500, y: 250, width: 250, height: 250, value: imgboss1, alive: true},
+            boss: { x: 400, y: 300, width: 250, height: 250, value: imgboss1, alive: true},
             door: { x: 450, y: 300, width: 170, height: 160, value: "Door_01" },
             images: [
                 { x: (canvasWidth/2 - 120), y: 150, width: 150, height: 150, value: img01, name: "Item_01", obtained: 0},
-                { x: (canvasWidth/2 + 220), y: 120, width: 150, height: 150, value: img02, name: "Item_02", obtained: 0}
+                { x: (canvasWidth/2 + 220), y: 120, width: 150, height: 150, value: img02, name: "Item_02", obtained: 0},
+                { x: (canvasWidth/2 + 360), y: 300, width: 75, height: 40, value: imgformula, name: "form_paperi", obtained: 0}
             ]
         },
         { // Stage 2
@@ -144,42 +150,31 @@ imgBackground.src = "kuvat/taso_1_kuvat/Taso_1.png";
 imgBackground2.src = "kuvat/taso_2_kuvat/Taso_2.png";
 imgBackground3.src = "kuvat/taso_3_kuvat/Taso_3.png";
 imgBackground4.src = "kuvat/taso_4_kuvat/Taso_4.png";
+imgformula.src = "kuvat/Formula_paperi.png";
+imgFormula1.src = "kuvat/taso_1_kuvat/Taso1Formula.png";
+imgFormula2.src = "kuvat/taso_2_kuvat/Taso2Formula.png";
+imgFormula3.src = "kuvat/taso_3_kuvat/Taso3Formula.png";
 
 //image onload data
-//alt - setImageOnload(){images.img01.onload = refreshCanvas,...} then call this function on canvas
 function genImageOnload(){
     
     document.addEventListener("DOMContentLoaded", function() {
         
-        imgBackground.onload = function() {
-        refreshCanvas();
-    }    
-        imgBackground2.onload = function() {
-        refreshCanvas();
-    }  
-        img01.onload = function() {
-        refreshCanvas();
-    }    
-        img02.onload = function() {
-        refreshCanvas();
-    }
-        img03.onload = function() {
-        refreshCanvas();
-    }  
-        img04.onload = function() {
-        refreshCanvas();
-    }    
-        imgboss1.onload = function() {
-        refreshCanvas();
-    }  
-        imgboss2.onload = function() {
-        refreshCanvas();
-    }    
-        imgavain.onload = function() {
-        refreshCanvas();
-    }
-}
-)};
+        imgBackground.onload = function() { refreshCanvas(); }    
+        imgBackground2.onload = function() { refreshCanvas(); }  
+        img01.onload = function() { refreshCanvas(); }    
+        img02.onload = function() { refreshCanvas(); }
+        img03.onload = function() { refreshCanvas(); }  
+        img04.onload = function() { refreshCanvas(); }    
+        imgboss1.onload = function() { refreshCanvas(); }  
+        imgboss2.onload = function() { refreshCanvas(); }    
+        imgavain.onload = function() { refreshCanvas(); }
+        imgformula.onload = function() { refreshCanvas(); }
+        imgFormula1.onload = function() { refreshCanvas(); }
+        imgFormula2.onload = function() { refreshCanvas(); }
+        imgFormula3.onload = function() { refreshCanvas(); }
+    });
+};
 
 /*for (const key in img) {
   img[key].onload = function() {

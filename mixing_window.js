@@ -130,6 +130,8 @@ function createMixingWindow() {
     // Tallennetaan exit-alue globaaliksi
     window.exitBtnArea = { x: exitX, y: exitY, w: 110, h: 50 };
 
+
+
     //inventory esineet //sijoita paikoilleen oikein
     let invIndex2nd = 0;
     for (let i = 0; i < inventory.length; i++) {
@@ -186,13 +188,61 @@ function createMixingWindow() {
     // result-slotin alue (varmistus jos ei määritelty aiemmin)
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
 
-    // Tallennetaan inventori ja mix-slot -peruskoordinaatit klikkitarkistuksia varten
-    window.mixWindowData = {
-        invBaseX, invBaseY,
-        mixSlotsBaseX, mixSlotsBaseY
-    };
+    // form-painike mixing-ikkunan yläoikeaan, jos pelaajalla on paperi
+    // Kiinteä sijainti canvaksella: (800, 120), koko 100x80
+    if (formulaHallussa === true) {
+        const fx = 800;
+        const fy = 120;
+        const fw = 100;
+        const fh = 80;
+        ctx.fillStyle = "rgba(0,0,0,1)";
+        ctx.fillRect(fx, fy, fw, fh);
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillRect(fx + 5, fy + 5, fw - 10, fh - 10);
+        // Piirrä pienennetty paperikuva, jos saatavilla (käytetään imgformula)
+        if (typeof imgformula !== "undefined") {
+            ctx.drawImage(imgformula, fx + 8, fy + 8, fw - 16, fh - 16);
+        } else {
+            ctx.fillStyle = "#000";
+            ctx.font = "12px Arial";
+            ctx.fillText("Formula", fx + fw/2, fy + fh/2);
+        }
+        // tallennetaan alue klikkauksia varten
+        window.formulaBtnArea = { x: fx, y: fy, w: fw, h: fh };
+    }
 
-} 
+    // Jos pelaaja avannut form kuvan, piirretään overlay (keskelle)
+    if (window.showingFormula) {
+        // valitse tasokohtainen kuva
+        let formulaImg = imgFormula1; // oletus
+        if (typeof tasoNumero !== "undefined") {
+            if (tasoNumero === 1) formulaImg = (typeof imgFormula1 !== "undefined" ? imgFormula1 : imgformula);
+            else if (tasoNumero === 2) formulaImg = (typeof imgFormula2 !== "undefined" ? imgFormula2 : imgformula);
+            else if (tasoNumero === 3) formulaImg = (typeof imgFormula3 !== "undefined" ? imgFormula3 : imgformula);
+        }
+        // overlay koko ja sijainti (keskitetty)
+        const ow = 600;
+        const oh = 480;
+        const ox = Math.round((canvasWidth - ow) / 2);
+        const oy = Math.round((canvasHeight - oh) / 2);
+        // tummentava tausta
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        // valkoinen kehys ja kuva
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillRect(ox, oy, ow, oh);
+        if (formulaImg && formulaImg.complete) {
+            ctx.drawImage(formulaImg, ox + 10, oy + 10, ow - 20, oh - 20);
+        } else {
+            ctx.fillStyle = "#000";
+            ctx.font = "20px Arial";
+            ctx.fillText("Formula (taso " + tasoNumero + ")", ox + ow/2, oy + oh/2);
+        }
+        // tallennetaan overlay-alue, jotta klikkaus sulkee sen
+        window.formulaOverlayArea = { x: ox, y: oy, w: ow, h: oh };
+    }
+
+} //createMixingWindow ending bracket
 
 function handleMixingScreen(x, y) {
     console.log(x, y);
@@ -324,5 +374,37 @@ function handleMixingScreen(x, y) {
                 return;
             }
         }
+    }
+
+    // Jos overlay on näkyvissä -> klikkaus overlayissa piilottaa sen
+    if (window.showingFormula) {
+        if (window.formulaOverlayArea &&
+            x >= window.formulaOverlayArea.x &&
+            x <= window.formulaOverlayArea.x + window.formulaOverlayArea.w &&
+            y >= window.formulaOverlayArea.y &&
+            y <= window.formulaOverlayArea.y + window.formulaOverlayArea.h) {
+            // sulje overlay
+            window.showingFormula = false;
+            createMixingWindow();
+            return;
+        } else {
+            // klikattu muualla, myös suljetaan
+            window.showingFormula = false;
+            createMixingWindow();
+            return;
+        }
+    }
+
+    // Formula-painikkeen käsittely (näyttää overlayin)
+    if (window.formulaBtnArea &&
+        x >= window.formulaBtnArea.x &&
+        x <= window.formulaBtnArea.x + window.formulaBtnArea.w &&
+        y >= window.formulaBtnArea.y &&
+        y <= window.formulaBtnArea.y + window.formulaBtnArea.h) {
+
+        // Toggle näyttö
+        window.showingFormula = !window.showingFormula;
+        createMixingWindow();
+        return;
     }
 }
