@@ -188,6 +188,10 @@ function createMixingWindow() {
     // result-slotin alue (varmistus jos ei määritelty aiemmin)
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
 
+    // Itemien painonta toimimiseen
+    window.mixWindowData = {
+        invBaseX, invBaseY,mixSlotsBaseX, mixSlotsBaseY};
+
     // form-painike mixing-ikkunan yläoikeaan, jos pelaajalla on paperi
     // Kiinteä sijainti canvaksella: (800, 120), koko 100x80
     if (formulaHallussa === true) {
