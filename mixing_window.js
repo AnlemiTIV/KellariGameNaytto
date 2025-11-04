@@ -99,14 +99,14 @@ function createMixingWindow() {
     // result-slotin alue globaalisti klikkauksia varten
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
 
+
+    // 
     if (mixingResult) {
-        if (mixingResult === "Item_01") {
-            ctx.drawImage(img01, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
-        } else if (mixingResult === "Item_02") {
-            ctx.drawImage(img02, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
-        } else if (mixingResult === "MixTest") {
-            ctx.drawImage(imgMixed, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
-        } else {
+        if (mixingResult === "Potioni_Pinkki") {
+            ctx.drawImage(imgPotPink, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        } else if (mixingResult === "Potioni_keltainen") {
+            ctx.drawImage(imgPotYellow, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        } else {  
             // LISÄÄ MUUT TULOKSET TÄHÄN TARVITTAESSA
             // Jos ei ole kuvaa, piirrä tekstinä
             ctx.fillStyle = "#0a0909ff";
@@ -130,43 +130,72 @@ function createMixingWindow() {
     // Tallennetaan exit-alue globaaliksi
     window.exitBtnArea = { x: exitX, y: exitY, w: 110, h: 50 };
 
+    const itemImageMap = {
+        "Item_01": typeof img01 !== "undefined" ? img01 : null,
+        "Item_02": typeof img02 !== "undefined" ? img02 : null,
+        "MixTest": typeof imgMixed !== "undefined" ? imgMixed : null,
+        "Empty_Pot": typeof imgPotEmpty !== "undefined" ? imgPotEmpty : null,
+        "form_paperi": typeof imgformula !== "undefined" ? imgformula : null,
+        "seitti": typeof imgSpidWeb !== "undefined" ? imgSpidWeb : null,
+        "mata_paprika": typeof imgMoldFood !== "undefined" ? imgMoldFood : null,
+        "Potioni_vihrea": typeof imgPotGreen !== "undefined" ? imgPotGreen : null,
+        "Potioni_Pinkki": typeof imgPotPink !== "undefined" ? imgPotPink : null,
+        "Potioni_keltainen": typeof imgPotYellow !== "undefined" ? imgPotYellow : null,
+        "Potioni_vesi": typeof imgPotBlue !== "undefined" ? imgPotBlue : null,
+        // Lisää tänne muita nimiä tarvittaessa:
 
-
+    };
     //inventory esineet //sijoita paikoilleen oikein
     let invIndex2nd = 0;
     for (let i = 0; i < inventory.length; i++) {
-        let item = inventory[i];
-        //((i * 135) + invBaseX, invBaseY, 140, 115); Sijainnit missä sekoitus_window:in inventori slotit on
+        const itemName = inventory[i];
+        if (!itemName || itemName === 0) continue; // tyhjä paikka => ei piirretä
 
-        if (item === "Item_01") {
-            ctx.drawImage(img01, (invIndex2nd * 135) + invBaseX + 10, invBaseY - 1, 115, 115);
-            img01_index = invIndex2nd;
-            invIndex2nd++;
-        } else if (item === "Item_02") {
-            ctx.drawImage(img02, (invIndex2nd * 135) + invBaseX + 5, invBaseY - 7, 125, 125);
-            img02_index = invIndex2nd;
-            invIndex2nd++;
-        } else if (item === "MixTest") {
-            ctx.drawImage(imgMixed, (invIndex2nd * 135) + invBaseX + 5, invBaseY - 7, 125, 125);
-            invIndex2nd++;
+        const drawImg = itemImageMap[itemName] || null;
+        const drawX = (invIndex2nd * 135) + invBaseX + 10;
+        const drawY = invBaseY + 0; // pieni säätö jos tarvitaan
+        const drawW = 115;
+        const drawH = 115;
+
+        if (drawImg) {
+            ctx.drawImage(drawImg, drawX, drawY, drawW, drawH);
+        } else {
+            // fallback: piirrä placeholder-ruutu ja nimi
+            ctx.fillStyle = "rgba(80,80,80,0.6)";
+            ctx.fillRect(drawX, drawY, drawW, drawH);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(String(itemName), drawX + drawW / 2, drawY + drawH / 2);
         }
+
+        invIndex2nd++;
     }
 
-    // inventorin esine mixing slotteihin jos ne näkyvät niiden muuttujissa
+    // Piirrä mixing-slottien kuvat (ei kovakoodattuja if-lauseita)
     let mixSlotsIndex = 0;
     for (let i = 0; i < mixingSlots.length; i++) {
-        let item2 = mixingSlots[i];
+        const itemName = mixingSlots[i];
+        if (!itemName || itemName === 0) continue;
 
-        if (item2 === "Item_01") {
-            ctx.drawImage(img01, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
-            mixSlotsIndex++;
-        } else if (item2 === "Item_02") {
-            ctx.drawImage(img02, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
-            mixSlotsIndex++;
-        } else if (item2 === "MixTest") {
-            ctx.drawImage(imgMixed, (mixSlotsIndex * 175) + mixSlotsBaseX, mixSlotsBaseY, 148, 127);
-            mixSlotsIndex++;
+        const drawImg = itemImageMap[itemName] || null;
+        const drawX = (mixSlotsIndex * 175) + mixSlotsBaseX + 10;
+        const drawY = mixSlotsBaseY + 10;
+        const drawW = 128;
+        const drawH = 107;
+
+        if (drawImg) {
+            ctx.drawImage(drawImg, drawX, drawY, drawW, drawH);
+        } else {
+            ctx.fillStyle = "rgba(80,80,80,0.6)";
+            ctx.fillRect(drawX, drawY, drawW, drawH);
+            ctx.fillStyle = "#fff";
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(String(itemName), drawX + drawW / 2, drawY + drawH / 2);
         }
+
+        mixSlotsIndex++;
     }
 
     //Sekoita-painike
@@ -187,6 +216,18 @@ function createMixingWindow() {
 
     // result-slotin alue (varmistus jos ei määritelty aiemmin)
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
+
+
+    window.mixWindowData = {
+
+
+        invBaseX, invBaseY,
+
+
+        mixSlotsBaseX, mixSlotsBaseY
+
+
+    };
 
     // form-painike mixing-ikkunan yläoikeaan, jos pelaajalla on paperi
     // Kiinteä sijainti canvaksella: (800, 120), koko 100x80
@@ -229,7 +270,7 @@ function createMixingWindow() {
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         // valkoinen kehys ja kuva
-        ctx.fillStyle = "rgba(255,255,255,0.95)";
+
         ctx.fillRect(ox, oy, ow, oh);
         if (formulaImg && formulaImg.complete) {
             ctx.drawImage(formulaImg, ox + 10, oy + 10, ow - 20, oh - 20);

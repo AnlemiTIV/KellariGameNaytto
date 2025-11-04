@@ -66,22 +66,37 @@ function refreshCanvas() {
         
     }
 
-    // Piirrä item_01, jos sitä ei ole otettu
-    // Tämän voisi koodata uudelleen erilaisella tavalla, mutta saa kelvata toistaiseksi
-    // Voi toimia 1. kentässä mutta ei jatkossa
-    if (stageNow.images[0].obtained !== 1){
-        ctx.drawImage(stageNow.images[0].value, stageNow.images[0].x, stageNow.images[0].y, stageNow.images[0].width, stageNow.images[0].height);
+    // Piirtää itemit
+    if (Array.isArray(stageNow.images)) {
+        // Käy läpi kaikki kentän images-taulukon objektit ja piirrä ne, jos niitä ei ole otettu
+        stageNow.images.forEach(imgObj => {
+            if (!imgObj) return;
+            // jos objekteilla on 'obtained' -kenttä, tarkistetaan se; muuten piirretään aina
+            if (typeof imgObj.obtained === "number") {
+                if (imgObj.obtained !== 1 && imgObj.value) {
+                    ctx.drawImage(imgObj.value, imgObj.x, imgObj.y, imgObj.width, imgObj.height);
+                }
+            } else {
+                // fallback: piirrä jos value löytyy
+                if (imgObj.value) {
+                    console.log("kuva piirretty ilman 'obtained' -kenttää", imgObj);
+                    ctx.drawImage(imgObj.value, imgObj.x, imgObj.y, imgObj.width, imgObj.height);
+                }
+            }
+        });
     }
-    // Piirrä item_02, jos sitä ei ole otettu
-    if (stageNow.images[1].obtained !== 1){
-        ctx.drawImage(stageNow.images[1].value, stageNow.images[1].x, stageNow.images[1].y, stageNow.images[1].width, stageNow.images[1].height);
+
+    // Pirrää roskakasan taso 1
+    if (stageNow.trash) {
+        ctx.drawImage(stageNow.trash.value, stageNow.trash.x, stageNow.trash.y, stageNow.trash.width, stageNow.trash.height);
     }
-     // Piirrä item_03 (formula). Pitäisi muuttaa myöhemmin omaan kuin images
-    if (stageNow.images[2] && stageNow.images[2].obtained !== 1){
-        ctx.drawImage(stageNow.images[2].value, stageNow.images[2].x, stageNow.images[2].y, stageNow.images[2].width, stageNow.images[2].height);
+    
+    if (stageNow.crackWall) {
+        ctx.drawImage(stageNow.crackWall.value, stageNow.crackWall.x, stageNow.crackWall.y, stageNow.crackWall.width, stageNow.crackWall.height);
     }
+
     // Piirrä boss
-    if (stageNow.boss.alive) { //`item_${item_number}`)
+    if (stageNow.boss && stageNow.boss.alive) { //`item_${item_number}`)
         ctx.drawImage(stageNow.boss.value, stageNow.boss.x, stageNow.boss.y, stageNow.boss.width, stageNow.boss.height);
     }
 
@@ -90,30 +105,47 @@ function refreshCanvas() {
         ctx.drawImage(imgavain, 90, 529, 95, 95);
     }
 
-    // Piirrä inventaarion esineet
-    // Tätä osiota kenties muokattava, jos tarkoitus edetä kentästä toiseen, ehdottomasti
+    // Piirrä inventaarion esineet (yksinkertaisempi: käytä map:ia nimestä kuvaan)
+    // Rakennetaan kartta nykyisen kentän item-nimestä siihen liittyvään Image-objektiin
+    const itemImageMap = {};
+    // stageNow määritellään yllä refreshCanvasissa
+    if (stageNow && Array.isArray(stageNow.images)) {
+        stageNow.images.forEach(imgObj => {
+            if (imgObj && imgObj.name && imgObj.value) {
+                itemImageMap[imgObj.name] = imgObj.value;
+            }
+        });
+    }
+    // Lisää globaaleja / erikoistapauksia karttaan (tarvittaessa laajenna)
+    // Eli ei (stageNow.images) vaan erikseen määritellyt itemit.
+    itemImageMap["MixTest"] = imgMixed;
+    itemImageMap["Potioni_vesi"] = imgPotBlue;
+    // itemImageMap["Item_03"] = someImage; // lisää tarvittaessa
+
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
-        let item = inventory[i];
-       
-        if (item === "Item_01") {
-            ctx.drawImage(stageNow.images[0].value, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
-            invIndex++;
-        } else if (item === "Item_02") {
-            ctx.drawImage(stageNow.images[1].value, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
-            invIndex++;
-        } else if (item === "Item_03") {
-            ctx.drawImage(stageNow.images[0].value, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
-            invIndex++;
-        } else if (item === "Item_04") {
-            ctx.drawImage(stageNow.images[1].value, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
-            invIndex++;
-        } else if (item === "MixTest") {
-            ctx.drawImage(imgMixed, (invIndex * 110) + inventoryBaseX, 615, 120, 120);
-            invIndex++;
+        const itemName = inventory[i];
+        if (!itemName || itemName === 0) continue; // tyhjä paikka
+
+        const drawImg = itemImageMap[itemName];
+        const drawX = (invIndex * 110) + inventoryBaseX;
+        const drawY = 615;
+        const drawW = 120;
+        const drawH = 120;
+
+        if (drawImg) {
+            ctx.drawImage(drawImg, drawX, drawY, drawW, drawH);
+        } else {
+            // Debug: piirrä placeholder jos kuvaa ei löydy
+            ctx.fillStyle = "rgba(40,40,40,0.6)";
+            ctx.fillRect(drawX, drawY, drawW, drawH);
+            ctx.fillStyle = "#fff";
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(String(itemName), drawX + drawW/2, drawY + drawH/2);
         }
-      
-        // Lisää muita esineitä tarvittaessa
+
+        invIndex++;
     }
 
 } 
@@ -162,6 +194,13 @@ function handleFirstScreen(x, y){
             x >= item.x && x <= item.x + item.width &&
             y >= item.y && y <= item.y + item.height
         ) {
+            // Jos form_paperi, älä lisää inventoriin — merkitse löydetyksi ja ota formula käyttöön
+            if (item.name === "form_paperi") {
+                item.obtained = 1;
+                formulaHallussa = true;
+                refreshCanvas();
+                return;
+            }
             inventory.unshift(item.name);
             useless = inventory.pop();
             item.obtained = 1;
@@ -174,7 +213,53 @@ function handleFirstScreen(x, y){
             return;
         }
     }
-    //('item_${item_number}') esim, kun tarkoitus pitää kirjaa missä kentässä mennään?
+
+    //klikattu roskakasa (trash) -> Saat esineitä yksi kerrallaan
+if (stageNow.trash &&
+        x >= stageNow.trash.x &&
+        x <= stageNow.trash.x + stageNow.trash.width &&
+        y >= stageNow.trash.y &&
+        y <= stageNow.trash.y + stageNow.trash.height) {
+
+        if (!Array.isArray(stageNow.trash.items)) {
+            stageNow.trash.items = ["Potioni_vihrea", "mata_paprika"];
+        }
+        // Jos roskiksessa ei ole enää esineitä, annetaan palaute ja palataan
+        if (stageNow.trash.items.length === 0) {
+            console.log("Roskiksesta ei löydy mitään.");
+            return;
+        }
+        const emptyIdx = inventory.indexOf(0);
+        if (emptyIdx === -1) {
+            console.log("Inventori täynnä.");
+            return;
+        }
+
+        // Ota ensimmäinen esine roskiksesta ja poista se listalta
+        const foundItem = stageNow.trash.items.shift();
+        inventory[emptyIdx] = foundItem;
+        console.log("Löysit roskiksesta:", foundItem);
+        refreshCanvas();
+        return;
+    }
+
+    //klikattu seinän murtuma (crackWall) -> jos inventoriissa tyhjä potti, täytetään vesi-potioniksi
+    if (stageNow.crackWall &&
+        x >= stageNow.crackWall.x &&
+        x <= stageNow.crackWall.x + stageNow.crackWall.width &&
+        y >= stageNow.crackWall.y &&
+        y <= stageNow.crackWall.y + stageNow.crackWall.height) {
+
+        const emptyIdx = inventory.indexOf("Empty_Pot");
+        if (emptyIdx !== -1) {
+            // korvataan ensimmäinen Empty_Pot vesipotionilla
+            inventory[emptyIdx] = "Potioni_vesi";
+            console.log("Empty_Pot -> Potioni_vesi");
+            refreshCanvas();
+            return;
+        }
+        // Ei toimi ilman potionia(voi lisätä palaute/ääniefektin)
+    }
 
     // Boss Poisto test
     // Check boss clicks (if applicable)
@@ -185,8 +270,8 @@ function handleFirstScreen(x, y){
         y >= boss1.y && y <= boss1.y + boss1.height
     ){
         
-        if (isMixingWindowOpen === false && inventory.includes("MixTest")){
-            inventory = inventory.filter(item => item !== "MixTest");
+        if (isMixingWindowOpen === false && inventory.includes("Potioni_keltainen")){
+            inventory = inventory.filter(item => item !== "Potioni_keltainen");
             boss1.alive = false;
             console.log("Bossi on voitettu!");
             inventory.unshift(0);

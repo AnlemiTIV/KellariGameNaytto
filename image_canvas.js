@@ -1,6 +1,7 @@
 //new Image() data
 //module vaihtoehto - const images = {img01: new Image(),}
 //const images = {kentta1: {img01: new Image(), img02 = new Image(),....}}
+
 const img01 = new Image();
 const img02 = new Image();
 const img03 = new Image();
@@ -14,10 +15,27 @@ const imgBackground2 = new Image();
 const imgBackground3 = new Image();
 const imgBackground4 = new Image();
 const imgformula = new Image();
-// Lisätty: erilliset formula-kuvat tasoille (Taso1Formula, Taso2Formula, Taso3Formula)
+//formulakuvat
 const imgFormula1 = new Image();
 const imgFormula2 = new Image();
 const imgFormula3 = new Image();
+// Taso 1 itemit
+const imgPotEmpty = new Image();
+const imgPotBlue = new Image();
+const imgPotYellow = new Image();
+const imgPotPink = new Image();
+const imgPotGreen = new Image();
+const imgSpidWeb = new Image();
+const imgCrackWall = new Image();
+const imgMoldFood = new Image();
+const imgTrash = new Image();
+// Taso 2 itemit
+
+
+
+
+
+
 /* const imgboss2 = new Image();
 const img03 //kenttä 2
 const img04 = new Image();
@@ -85,6 +103,10 @@ const locations = {
 
 //1. tasosta 2. tasoon sen mukaan minkä arvoinen kenttänumero muuttuja on, numeron päivitettyä funktio uudelleen ladataan?
 //Lisää sitten tarkemmat koordinaatit muokatuista tiedostoista mitkä jäsen päivittänyt
+
+
+
+// käytä images esineihiin, mitkä menevät inventoriin!
 const locations = {
     stages: [
         { // Stage 1
@@ -93,11 +115,17 @@ const locations = {
             music: "tba",
             boss: { x: 400, y: 300, width: 250, height: 250, value: imgboss1, alive: true},
             door: { x: 450, y: 300, width: 170, height: 160, value: "Door_01" },
+            trash: { x: 60, y: 380, width: 300, height: 200, value: imgTrash},
+            crackWall: { x: 650, y: 380, width: 250, height: 250, value: imgCrackWall},
             images: [
-                { x: (canvasWidth/2 - 120), y: 150, width: 150, height: 150, value: img01, name: "Item_01", obtained: 0},
-                { x: (canvasWidth/2 + 220), y: 120, width: 150, height: 150, value: img02, name: "Item_02", obtained: 0},
-                { x: (canvasWidth/2 + 360), y: 300, width: 75, height: 40, value: imgformula, name: "form_paperi", obtained: 0}
-            ]
+                { x: (canvasWidth/2 + 180), y: 248, width: 100, height: 100, value: imgPotEmpty, name: "Empty_Pot", obtained: 0},
+                { x: (canvasWidth/2 + 360), y: 300, width: 75, height: 40, value: imgformula, name: "form_paperi", obtained: 0},
+                { x: (canvasWidth/2 - 150), y: 400, width: 100, height: 100, value: imgSpidWeb, name:"seitti", obtained: 0},
+                {value: imgMoldFood, name:"mata_paprika", obtained: 0},
+                {value: imgPotGreen, name:"Potioni_vihrea", obtained: 0},
+                {value: imgPotPink, name:"Potioni_Pinkki", obtained: 0},
+                {value: imgPotYellow, name:"Potioni_keltainen", obtained: 0}
+            ],
         },
         { // Stage 2
             id: 2,
@@ -107,7 +135,8 @@ const locations = {
             door: { x: 800, y: 400, width: 120, height: 200, value: "Door_02" },
             images: [
                 { x: 150, y: 250, width: 220, height: 180, value: img03, name: "Item_03", obtained: 0},
-                { x: 350, y: 450, width: 310, height: 180, value: img04, name: "Item_04", obtained: 0}
+                { x: 350, y: 450, width: 310, height: 180, value: img04, name: "Item_04", obtained: 0},
+
             ]
         },
         { // Stage 3
@@ -154,7 +183,15 @@ imgformula.src = "kuvat/Formula_paperi.png";
 imgFormula1.src = "kuvat/taso_1_kuvat/Taso1Formula.png";
 imgFormula2.src = "kuvat/taso_2_kuvat/Taso2Formula.png";
 imgFormula3.src = "kuvat/taso_3_kuvat/Taso3Formula.png";
-
+imgCrackWall.src = "kuvat/taso_1_kuvat/seina_murtuma_alt.png";
+imgPotEmpty.src = "kuvat/taso_1_kuvat/Potioni_01.png";
+imgPotBlue.src = "kuvat/taso_1_kuvat/Potioni_vesi.png";
+imgPotYellow.src = "kuvat/taso_1_kuvat/Potioni_keltainen.png";
+imgPotPink.src = "kuvat/taso_1_kuvat/Potioni_pinkki.png";
+imgPotGreen.src = "kuvat/taso_1_kuvat/Potioni_vihrea.png";
+imgSpidWeb.src = "kuvat/taso_1_kuvat/Seitti.png";
+imgMoldFood.src = "kuvat/taso_1_kuvat/mata_paprika.png";
+imgTrash.src = "kuvat/taso_1_kuvat/Roskakasa_placeholder.png";
 //image onload data
 function genImageOnload(){
     
@@ -173,6 +210,16 @@ function genImageOnload(){
         imgFormula1.onload = function() { refreshCanvas(); }
         imgFormula2.onload = function() { refreshCanvas(); }
         imgFormula3.onload = function() { refreshCanvas(); }
+        imgCrackWall.onload = function() { refreshCanvas(); }
+        imgPotEmpty.onload = function() { refreshCanvas(); }
+        imgPotBlue.onload = function() { refreshCanvas(); }
+        imgPotYellow.onload = function() { refreshCanvas(); }
+        imgPotPink.onload = function() { refreshCanvas(); }
+        imgPotGreen.onload = function() { refreshCanvas(); }
+        imgSpidWeb.onload = function() { refreshCanvas(); }
+        imgMoldFood.onload = function() { refreshCanvas(); }
+        imgTrash.onload = function() { refreshCanvas(); }
+
     });
 };
 

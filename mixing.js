@@ -8,7 +8,8 @@ class Recipe {
 // Reseptit (käytä samoja stringejä kuin inventory / mixingSlots: esim "Item_01")
 const recipes = [
     new Recipe(["Item_01", "Item_02"], "MixTest"),
-    new Recipe(["juusto", "leipa"], "nami")
+    new Recipe(["Potioni_vihrea", "seitti"], "Potioni_Pinkki"),
+    new Recipe(["Potioni_Pinkki", "Potioni_vesi","mata_paprika"], "Potioni_keltainen"),
 ];
 
 // apu: laskee arvon esiintymät taulukossa
@@ -52,8 +53,17 @@ function compactMixingSlots() {
     }
 }
 
+// Kompaktoi inventory: siirtää kaikki ei-nollat vasempaan ja täyttää lopun nollilla
+function compactInventory() {
+    const vals = inventory.filter(s => s !== 0);
+    for (let i = 0; i < inventory.length; i++) {
+        inventory[i] = vals[i] !== undefined ? vals[i] : 0;
+    }
+}
+
 // Lisää tuloksen inventoryyn: käyttää ensimmäistä tyhjää paikkaa (0) tai pushaa eteen
 function addResultToInventory(result) {
+    console.log("Lisätään inventoriin:", result);
     const emptyIndex = inventory.findIndex(s => s === 0);
     if (emptyIndex !== -1) {
         inventory[emptyIndex] = result;
@@ -61,14 +71,19 @@ function addResultToInventory(result) {
         inventory.unshift(result);
         inventory.pop();
     }
+    // Kompaktoi invetoriota poistojen/siirtojen jälkeen
+    compactInventory();
+    console.log("Uusi inventori:", inventory);
 }
 
-
+// Poistaa ainesosia inventoriosta ja kompaktoi
 function removeIngredientsFromInventory(ingredients) {
     ingredients.forEach(item => {
         const idx = inventory.indexOf(item);
         if (idx > -1) inventory[idx] = 0;
     });
+    // Siirrä kaikki jäljellä olevat tavarat vasemmalle
+    compactInventory();
 }
 
 // Pääfunktio: yrittää tehdä miksausta. Palauttaa tuloksen tai null jos ei onnistu. 
