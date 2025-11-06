@@ -113,7 +113,9 @@ function createMixingWindow() {
             ctx.drawImage(imgGlassDough, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
         } else if (mixingResult === "Juustokakku_alt") {
             ctx.drawImage(imgCheeseCake, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
-        } else {  
+        } else if (mixingResult === "Pitka_keppi") {
+            ctx.drawImage(imgLongStick, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        } else {
             // LISÄÄ MUUT TULOKSET TÄHÄN TARVITTAESSA
             // Jos ei ole kuvaa, piirrä tekstinä
             ctx.fillStyle = "#0a0909ff";
@@ -150,6 +152,17 @@ function createMixingWindow() {
         "Potioni_keltainen": typeof imgPotYellow !== "undefined" ? imgPotYellow : null,
         "Potioni_vesi": typeof imgPotBlue !== "undefined" ? imgPotBlue : null,
 
+        //Taso 2 esineet
+        "Item_03": typeof img03 !== "undefined" ? img03 : null,
+        "Item_04": typeof img04 !== "undefined" ? img04 : null,
+        "Kulho": typeof imgKulho !== "undefined" ? imgKulho : null,
+        "Pitka_keppi": typeof imgLongStick !== "undefined" ? imgLongStick : null,
+        "Puunjalka": typeof imgWoodLeg !== "undefined" ? imgWoodLeg : null,
+        "Purkka": typeof imgGum !== "undefined" ? imgGum : null,
+        "Viivoitin": typeof imgRuler !== "undefined" ? imgRuler : null,
+        "Avain_taso2": typeof imgAvain2 !== "undefined" ? imgAvain2 : null,
+        "Yarnball": typeof imgYarnball !== "undefined" ? imgYarnball : null,
+
         //taso 3 esineet
         "Lasikulho" : typeof imgGlassEmpty !== "undefined" ? imgGlassEmpty: null,
         "Vesikulhossa" : typeof imgGlassBlue !== "undefined" ? imgGlassBlue: null,
@@ -170,6 +183,7 @@ function createMixingWindow() {
     let invIndex2nd = 0;
     for (let i = 0; i < inventory.length; i++) {
         const itemName = inventory[i];
+        console.log("Inventory item at index " + i + ": " + itemName);
         if (!itemName || itemName === 0) continue; // tyhjä paikka => ei piirretä
 
         const drawImg = itemImageMap[itemName] || null;
@@ -389,22 +403,32 @@ function handleMixingScreen(x, y) {
     const invBase = window.mixWindowData ? window.mixWindowData.invBaseX : (350);
     const invBaseY = window.mixWindowData ? window.mixWindowData.invBaseY : (460);
     for (let i = 0; i < inventory.length; i++) {
-        let x2 = (i * 135) + invBase;
-        let y2 = invBaseY + 0; // säilytä sama offset
+        const slotX = (i * 135) + invBase;
+        const slotY = invBaseY;
+        const slotW = 120;
+        const slotH = 95;
 
         if (
-            x >= x2 &&
-            x <= x2 + 120 &&
-            y >= y2 &&
-            y <= y2 + 95
+            x >= slotX &&
+            x <= slotX + slotW &&
+            y >= slotY &&
+            y <= slotY + slotH
         ) {
             if (inventory[i] !== 0) {
                 const emptyIndex = mixingSlots.findIndex(s => s === 0);
                 if (emptyIndex !== -1) {
+                    // Siirrä valittu item mixing-slottiin
                     mixingSlots[emptyIndex] = inventory[i];
+
+                    // Poista valittu paikka ja kompaktio (siirrä muut vasemmalle)
                     inventory[i] = 0;
-                    if (typeof compactMixingSlots === "function") compactMixingSlots();
-                    createMixingWindow();
+                    const invSize = inventory.length;
+                    const compacted = inventory.filter(it => it !== 0);
+                    while (compacted.length < invSize) compacted.push(0);
+                    inventory = compacted;
+
+                    // Päivitä näkymä
+                    if (typeof createMixingWindow === "function") createMixingWindow();
                 }
                 return;
             }

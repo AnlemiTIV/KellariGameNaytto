@@ -95,6 +95,18 @@ function refreshCanvas() {
         ctx.drawImage(stageNow.crackWall.value, stageNow.crackWall.x, stageNow.crackWall.y, stageNow.crackWall.width, stageNow.crackWall.height);
     }
 
+    // Stage 2
+
+    if (stageNow.kulho) {
+        ctx.drawImage(stageNow.kulho.value, stageNow.kulho.x, stageNow.kulho.y, stageNow.kulho.width, stageNow.kulho.height);
+    }
+
+    if (stageNow.lockbox) {
+        ctx.drawImage(stageNow.lockbox.value, stageNow.lockbox.x, stageNow.lockbox.y, stageNow.lockbox.width, stageNow.lockbox.height);
+    }
+
+
+
     // Piirrä munakotelo taso 3
     if (stageNow.munakotelo) {
         ctx.drawImage(stageNow.munakotelo.value, stageNow.munakotelo.x, stageNow.munakotelo.y, stageNow.munakotelo.width, stageNow.munakotelo.height);
@@ -295,6 +307,61 @@ function handleFirstScreen(x, y){
         }
         // Ei toimi ilman potionia(voi lisätä palaute/ääniefektin)
     }
+    // taso 2.
+    if (stageNow.kulho &&
+        x >= stageNow.kulho.x &&
+        x <= stageNow.kulho.x + stageNow.kulho.width &&
+        y >= stageNow.kulho.y &&
+        y <= stageNow.kulho.y + stageNow.kulho.height) {
+        // Pelaajalla pitää olla Pitka_keppi inventoriissa
+        if (inventory.includes("Pitka_keppi")) {
+            const idx = inventory.indexOf("Pitka_keppi");
+            if (idx !== -1) {
+                // Poistetaan keppi inventoriista
+                inventory[idx] = 0;
+
+                // Poistetaan kulho kentästä (ei enää piirretä)
+                stageNow.kulho = null;
+
+                // Lisää Avain_taso2 kentän esineisiin, jos sitä ei vielä ole
+                const avainExists = Array.isArray(stageNow.images) &&
+                    stageNow.images.some(it => it && it.name === "Avain_taso2");
+                if (!avainExists) {
+                    // Aseta sopivat koordinaatit/sukupuoli, tässä sijoitetaan kulhon paikalle oikealle
+                    const newKey = {
+                        x: 450,
+                        y: 300,
+                        width: 40,
+                        height: 30,
+                        value: imgAvain2,
+                        name: "Avain_taso2",
+                        obtained: 0
+                    };
+                    if (!Array.isArray(stageNow.images)) stageNow.images = [];
+                    stageNow.images.push(newKey);
+                }
+
+                refreshCanvas();
+                return;
+            }
+        }
+    }
+
+    if (stageNow.lockbox &&
+        x >= stageNow.lockbox.x &&
+        x <= stageNow.lockbox.x + stageNow.lockbox.width &&
+        y >= stageNow.lockbox.y &&
+        y <= stageNow.lockbox.y + stageNow.lockbox.height) { 
+        // Pelaajalla pitää olla Avain_taso2 inventoriissa
+        const emptyIdx = inventory.indexOf("Avain_taso2");
+        if (emptyIdx !== -1) {
+            inventory[emptyIdx] = "Yarnball";
+            stageNow.lockbox = null;
+            refreshCanvas();
+        }
+    }
+    
+        
 
     //3. taso, kun klikataan vesihanasta, saadaan vettä tyhjään lasikulhoon
     if (stageNow.vesihana &&
@@ -338,13 +405,15 @@ function handleFirstScreen(x, y){
         x >= boss1.x && x <= boss1.x + boss1.width &&
         y >= boss1.y && y <= boss1.y + boss1.height
     ){
-        
-        if (isMixingWindowOpen === false && inventory.includes("Potioni_keltainen") || inventory.includes("Juustokakku_alt")){ // || "Juustokakku_alt"
+        // Vaaditaan että mixing-ikkuna on suljettu JA että inventory sisältää jonkin hyödyllisistä esineistä
+        if (isMixingWindowOpen === false && inventory.includes("Potioni_keltainen") || inventory.includes("Juustokakku_alt") || inventory.includes("Yarnball")){
 
             if (inventory.includes("Potioni_keltainen")){
                 inventory = inventory.filter(item => item !== "Potioni_keltainen"); 
             }
-
+            if (inventory.includes("Yarnball")){
+                inventory = inventory.filter(item => item !== "Yarnball");
+            }
             if (inventory.includes("Juustokakku_alt")){
                 inventory = inventory.filter(item => item !== "Juustokakku_alt");
             }
@@ -352,17 +421,11 @@ function handleFirstScreen(x, y){
             boss1.alive = false;
             console.log("Bossi on voitettu!");
             inventory.unshift(0);
-            //useless = inventory.pop();
-            //AL 25.10.25. Tässä todennäköisesti aktivoidaan muttujan arvo, mikä lisää avaimen käyttöön
-            //Ja tällä avaimella, saadaan muutokset aikaan kun ovesta painetaan, mikä vie meidät erilaiseen tasoon
-            avainHallussa = true;        
+            avainHallussa = true;
             refreshCanvas();
             return;
-        }}
-        //else if jos erilainen tulos inventorissa, tosin tämä ei varmaan paras mahdollinen tapa
-        //else if()){
-
-        //}
+        }
+    }
 
     //oven klikkaus, josta tasosta siirtyminen toiseen?
     if (

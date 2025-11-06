@@ -31,9 +31,13 @@ const imgCrackWall = new Image();
 const imgMoldFood = new Image();
 const imgTrash = new Image();
 // Taso 2 itemit
-
-
-
+const imgKulho = new Image();
+const imgLongStick = new Image();
+const imgWoodLeg = new Image();
+const imgGum = new Image();
+const imgRuler = new Image();
+const imgAvain2 = new Image();
+const imgYarnball = new Image();
 
 //Taso 3 itemit
 const imgGlassEmpty = new Image();
@@ -144,12 +148,17 @@ const locations = {
             id: 2,
             background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground2},
             music: "tba",
-            boss: { x: 500, y: 250, width: 250, height: 250, value: imgboss2, alive: true},
-            door: { x: 800, y: 400, width: 120, height: 200, value: "Door_02" },
+            boss: { x: 570, y: 200, width: 250, height: 250, value: imgboss2, alive: true},
+            door: { x: 800, y: 200, width: 120, height: 200, value: "Door_02" },
+            kulho: { x: 370, y: 145, width: 50, height: 40, value: imgKulho},
+            lockbox: { x: 280, y: 450, width: 80, height:80, value: img04, name: "Item_04", obtained: 0},
             images: [
-                { x: 150, y: 250, width: 220, height: 180, value: img03, name: "Item_03", obtained: 0},
-                { x: 350, y: 450, width: 310, height: 180, value: img04, name: "Item_04", obtained: 0},
-
+                { x: 300, y: 400, width: 20, height: 20, value: imgformula, name: "form_paperi", obtained: 0},
+                { x: 800, y: 450, width: 50, height: 50, value: imgWoodLeg, name:"Puunjalka", obtained: 0},
+                { x: 100, y: 550, width: 40, height: 40, value: imgGum, name:"Purkka", obtained: 0},
+                { x: 330, y: 310, width: 40, height: 15, value: imgRuler, name:"Viivoitin", obtained: 0},
+                {value: imgLongStick, name:"Pitka_keppi", obtained: 0},
+                {value: imgYarnball, name:"Yarnball", obtained: 0}
             ]
         },
         { // Stage 3
@@ -209,6 +218,7 @@ imgformula.src = "kuvat/Formula_paperi.png";
 imgFormula1.src = "kuvat/taso_1_kuvat/Taso1Formula.png";
 imgFormula2.src = "kuvat/taso_2_kuvat/Taso2Formula.png";
 imgFormula3.src = "kuvat/taso_3_kuvat/Taso3Formula.png";
+// Taso 1 itemit
 imgCrackWall.src = "kuvat/taso_1_kuvat/seina_murtuma_alt.png";
 imgPotEmpty.src = "kuvat/taso_1_kuvat/Potioni_01.png";
 imgPotBlue.src = "kuvat/taso_1_kuvat/Potioni_vesi.png";
@@ -218,7 +228,17 @@ imgPotGreen.src = "kuvat/taso_1_kuvat/Potioni_vihrea.png";
 imgSpidWeb.src = "kuvat/taso_1_kuvat/Seitti.png";
 imgMoldFood.src = "kuvat/taso_1_kuvat/mata_paprika.png";
 imgTrash.src = "kuvat/taso_1_kuvat/Roskakasa_placeholder.png";
+// Taso 2 itemit
+imgKulho.src = "kuvat/taso_2_kuvat/Kulho_alt.png";
+imgLongStick.src = "kuvat/taso_2_kuvat/Pitka_keppi.png";
+imgWoodLeg.src = "kuvat/taso_2_kuvat/puunjalka.png";
+imgGum.src = "kuvat/taso_2_kuvat/purkka.png";
+imgRuler.src = "kuvat/taso_2_kuvat/Viivoitin.png";
+imgAvain2.src = "kuvat/taso_2_kuvat/Avain_taso2.png";
+imgYarnball.src = "kuvat/taso_2_kuvat/yarnball.png";
 
+
+// Taso 3 itemit
 imgGlassEmpty.src = "kuvat/taso_3_kuvat/Lasikulho.png";
 imgGlassBlue.src = "kuvat/taso_3_kuvat/Vesikulhossa.png";
 imgGlassYolk.src = "kuvat/taso_3_kuvat/Keltuainen_Sekoitus.png";
@@ -229,6 +249,7 @@ imgCheese.src = "kuvat/taso_3_kuvat/Juusto.png";
 imgFlour.src = "kuvat/taso_3_kuvat/Jauhot.png";
 imgMilk.src = "kuvat/taso_3_kuvat/Maitopurkki.png";
 imgCheeseCake.src = "kuvat/taso_3_kuvat/Juustokakku_alt.png"; 
+
 
 //image onload data
 function genImageOnload(){
@@ -250,6 +271,7 @@ function genImageOnload(){
         imgFormula1.onload = function() { refreshCanvas(); }
         imgFormula2.onload = function() { refreshCanvas(); }
         imgFormula3.onload = function() { refreshCanvas(); }
+        //Taso 1 esineet
         imgCrackWall.onload = function() { refreshCanvas(); }
         imgPotEmpty.onload = function() { refreshCanvas(); }
         imgPotBlue.onload = function() { refreshCanvas(); }
@@ -258,7 +280,17 @@ function genImageOnload(){
         imgPotGreen.onload = function() { refreshCanvas(); }
         imgSpidWeb.onload = function() { refreshCanvas(); }
         imgMoldFood.onload = function() { refreshCanvas(); }
-        imgTrash.onload = function() { refreshCanvas(); }
+        imgTrash.onload = function() { refreshCanvas(); } 
+        //Taso 2 esineet
+        imgKulho.onload = function() { refreshCanvas(); }
+        imgLongStick.onload = function() { refreshCanvas(); }
+        imgWoodLeg.onload = function() { refreshCanvas(); }
+        imgGum.onload = function() { refreshCanvas(); }
+        imgRuler.onload = function() { refreshCanvas(); }
+        imgAvain2.onload = function() { refreshCanvas(); }
+        imgYarnball.onload = function() { refreshCanvas(); }
+        
+
         imgGlassEmpty.onload = function() { refreshCanvas(); } //Taso 3 esineet
         imgGlassBlue.onload = function() { refreshCanvas(); }
         imgGlassYolk.onload = function() { refreshCanvas(); }
@@ -269,7 +301,7 @@ function genImageOnload(){
         imgFlour.onload = function() { refreshCanvas(); }
         imgMilk.onload = function() { refreshCanvas(); }
         imgCheeseCake.onload = function() { refreshCanvas(); }
-
+    
     });
 };
 
