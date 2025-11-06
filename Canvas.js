@@ -26,15 +26,26 @@ function refreshCanvas() {
     //resetoi canvas ja canvas:in tausta
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    //poistu mustasta ruudusta
-    if (inNextLevel === true) {
-        ctx.fillStyle = "rgba(0,0,0,0.8)";
+    // End screen: jos peli etenee tason 3 yli, näytetään musta ruutu keskitetyllä tekstillä
+    if (tasoNumero > 3) {
+        // Täysi musta tausta
+        ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        
-        setTimeout(() => {
-            inNextLevel = false;
-            refreshCanvas()
-        }, 2000);
+
+        // Keskitetty teksti
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "36px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Yo'rue Winner!", canvasWidth / 2, canvasHeight / 2);
+
+       
+        if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
+            ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        }
+
+        return;
     }
 
     const stageNow = locations.stages[tasoNumero - 1];
@@ -166,6 +177,12 @@ function refreshCanvas() {
         invIndex++;
     }
 
+    // Piirrä fade overlay päällimmäiseksi (jos käynnissä)
+    if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
+        ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    }
+ 
 } 
 
 canvas01.addEventListener("click", (e) => {
@@ -433,14 +450,10 @@ function handleFirstScreen(x, y){
         x >= stageNow.door.x && x <= stageNow.door.x + stageNow.door.width &&
         y >= stageNow.door.y && y <= stageNow.door.y + stageNow.door.height
     ){
-        inNextLevel = true;
-        tasoNumero++;
-        inventory = [0, 0, 0, 0, 0, 0];
-        avainHallussa = false;
-        formulaHallussa = false;
-        refreshCanvas();
-        }
-    } 
+        // Käynnistä fade + tasojen vaihto (startLevelTransition hoitaa inventorin resetin)
+        startLevelTransition(tasoNumero + 1);
+     }
+ } 
 
 function handleMixingScreen(x, y){
     console.log(x, y);
@@ -510,4 +523,62 @@ function handleMixingScreen(x, y){
             }
         }
 
+}
+
+let fadeState = 'idle'; // 'idle' | 'fadingOut' | 'fadingIn'
+let fadeAlpha = 0;
+let fadeDuration = 1000;
+let fadeStartTime = 0;
+let fadeTargetLevel = null;
+
+function startLevelTransition(nextLevel) {
+    if (fadeState !== 'idle') return;
+    fadeState = 'fadingOut';
+    fadeAlpha = 0;
+    fadeStartTime = performance.now();
+    fadeTargetLevel = nextLevel;
+    requestAnimationFrame(stepFade);
+}
+
+function stepFade(timestamp) {
+    const half = fadeDuration / 2;
+    const elapsed = timestamp - fadeStartTime;
+    const t = Math.min(elapsed / half, 1); // 0..1 per puolisko
+
+    if (fadeState === 'fadingOut') {
+        fadeAlpha = t;
+        // piirrä väliaikaisesti (refreshCanvas kutsutaan alla)
+        refreshCanvas();
+        if (t < 1) {
+            requestAnimationFrame(stepFade);
+        } else {
+            // Vaihdetaan taso vasta kun ruutu on täysin musta
+            if (typeof fadeTargetLevel === "number") {
+                tasoNumero = fadeTargetLevel;
+                // tehdään samat resetit kuin aiemmin oven klikkauksessa tehtiin
+                inventory = [0, 0, 0, 0, 0, 0];
+                avainHallussa = false;
+                formulaHallussa = false;
+            }
+            // Aloita fade in
+            fadeState = 'fadingIn';
+            fadeStartTime = performance.now();
+            requestAnimationFrame(stepFade);
+        }
+        return;
+    }
+
+    if (fadeState === 'fadingIn') {
+        fadeAlpha = 1 - t;
+        refreshCanvas();
+        if (t < 1) {
+            requestAnimationFrame(stepFade);
+        } else {
+            // valmis
+            fadeAlpha = 0;
+            fadeState = 'idle';
+            refreshCanvas();
+        }
+        return;
+    }
 }
