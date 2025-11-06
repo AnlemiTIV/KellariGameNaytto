@@ -95,6 +95,11 @@ function refreshCanvas() {
         ctx.drawImage(stageNow.crackWall.value, stageNow.crackWall.x, stageNow.crackWall.y, stageNow.crackWall.width, stageNow.crackWall.height);
     }
 
+    // Piirrä munakotelo taso 3
+    if (stageNow.munakotelo) {
+        ctx.drawImage(stageNow.munakotelo.value, stageNow.munakotelo.x, stageNow.munakotelo.y, stageNow.munakotelo.width, stageNow.munakotelo.height);
+    }
+
     // Piirrä boss
     if (stageNow.boss && stageNow.boss.alive) { //`item_${item_number}`)
         ctx.drawImage(stageNow.boss.value, stageNow.boss.x, stageNow.boss.y, stageNow.boss.width, stageNow.boss.height);
@@ -121,6 +126,7 @@ function refreshCanvas() {
     itemImageMap["MixTest"] = imgMixed;
     itemImageMap["Potioni_vesi"] = imgPotBlue;
     // itemImageMap["Item_03"] = someImage; // lisää tarvittaessa
+    itemImageMap["Vesikulhossa"] = imgGlassBlue; //Toimii ilmankin joten jos jonkinlainen visuaalinen virhe, poista
 
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
@@ -215,7 +221,7 @@ function handleFirstScreen(x, y){
     }
 
     //klikattu roskakasa (trash) -> Saat esineitä yksi kerrallaan
-if (stageNow.trash &&
+    if (stageNow.trash &&
         x >= stageNow.trash.x &&
         x <= stageNow.trash.x + stageNow.trash.width &&
         y >= stageNow.trash.y &&
@@ -243,6 +249,35 @@ if (stageNow.trash &&
         return;
     }
 
+    //klikattu munakotelosta (eggcarton) -> Saat kananmunan
+    if (stageNow.munakotelo &&
+        x >= stageNow.munakotelo.x &&
+        x <= stageNow.munakotelo.x + stageNow.munakotelo.width &&
+        y >= stageNow.munakotelo.y &&
+        y <= stageNow.munakotelo.y + stageNow.munakotelo.height) {
+
+        if (!Array.isArray(stageNow.munakotelo.items)) {
+            stageNow.munakotelo.items = ["Kananmuna_alt"];
+        }
+        // Jos inventorissa kananmuna, annetaan palaute ja palataan
+        if (stageNow.munakotelo.items.length === 0) {
+            console.log("Sinulla on jo kananmuna.");
+            return;
+        }
+        const emptyIdx = inventory.indexOf(0);
+        if (emptyIdx === -1) {
+            console.log("Inventori täynnä.");
+            return;
+        }
+
+        // Ota ensimmäinen esine roskiksesta ja poista se listalta
+        const foundItem = stageNow.munakotelo.items.shift();
+        inventory[emptyIdx] = foundItem;
+        console.log("Löysit munakotelosta:", foundItem);
+        refreshCanvas();
+        return;
+    }
+
     //klikattu seinän murtuma (crackWall) -> jos inventoriissa tyhjä potti, täytetään vesi-potioniksi
     if (stageNow.crackWall &&
         x >= stageNow.crackWall.x &&
@@ -261,6 +296,40 @@ if (stageNow.trash &&
         // Ei toimi ilman potionia(voi lisätä palaute/ääniefektin)
     }
 
+    //3. taso, kun klikataan vesihanasta, saadaan vettä tyhjään lasikulhoon
+    if (stageNow.vesihana &&
+        x >= stageNow.vesihana.x &&
+        x <= stageNow.vesihana.x + stageNow.vesihana.width &&
+        y >= stageNow.vesihana.y &&
+        y <= stageNow.vesihana.y + stageNow.vesihana.height) {
+
+        const emptyIdx = inventory.indexOf("Lasikulho");
+        if (emptyIdx !== -1) {
+            // korvataan ensimmäinen Empty_Pot vesipotionilla
+            inventory[emptyIdx] = "Vesikulhossa";
+            console.log("Lasikulho -> Vesikulhossa");
+            refreshCanvas();
+            return;
+        }
+    }
+
+    //3. taso, kun klikataan uunista, saadaan juustokakku, korvaa taikinan
+    if (stageNow.uuni &&
+        x >= stageNow.uuni.x &&
+        x <= stageNow.uuni.x + stageNow.uuni.width &&
+        y >= stageNow.uuni.y &&
+        y <= stageNow.uuni.y + stageNow.uuni.height) {
+
+        const emptyIdx = inventory.indexOf("Taikina");
+        if (emptyIdx !== -1) {
+            // korvataan ensimmäinen Empty_Pot vesipotionilla
+            inventory[emptyIdx] = "Juustokakku_alt";
+            console.log("Taikina -> Juustokakku_alt");
+            refreshCanvas();
+            return;
+        }
+    }
+
     // Boss Poisto test
     // Check boss clicks (if applicable)
     const boss1 = locations.stages[tasoNumero - 1].boss;
@@ -270,8 +339,16 @@ if (stageNow.trash &&
         y >= boss1.y && y <= boss1.y + boss1.height
     ){
         
-        if (isMixingWindowOpen === false && inventory.includes("Potioni_keltainen")){
-            inventory = inventory.filter(item => item !== "Potioni_keltainen");
+        if (isMixingWindowOpen === false && inventory.includes("Potioni_keltainen") || inventory.includes("Juustokakku_alt")){ // || "Juustokakku_alt"
+
+            if (inventory.includes("Potioni_keltainen")){
+                inventory = inventory.filter(item => item !== "Potioni_keltainen"); 
+            }
+
+            if (inventory.includes("Juustokakku_alt")){
+                inventory = inventory.filter(item => item !== "Juustokakku_alt");
+            }
+
             boss1.alive = false;
             console.log("Bossi on voitettu!");
             inventory.unshift(0);

@@ -106,6 +106,13 @@ function createMixingWindow() {
             ctx.drawImage(imgPotPink, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
         } else if (mixingResult === "Potioni_keltainen") {
             ctx.drawImage(imgPotYellow, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        //Taso 3 sekoitukset 
+        } else if (mixingResult === "Keltuainen_Sekoitus") {
+            ctx.drawImage(imgGlassYolk, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        } else if (mixingResult === "Taikina") {
+            ctx.drawImage(imgGlassDough, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
+        } else if (mixingResult === "Juustokakku_alt") {
+            ctx.drawImage(imgCheeseCake, resultInnerX, resultInnerY, resultInnerW, resultInnerH);
         } else {  
             // LISÄÄ MUUT TULOKSET TÄHÄN TARVITTAESSA
             // Jos ei ole kuvaa, piirrä tekstinä
@@ -142,6 +149,20 @@ function createMixingWindow() {
         "Potioni_Pinkki": typeof imgPotPink !== "undefined" ? imgPotPink : null,
         "Potioni_keltainen": typeof imgPotYellow !== "undefined" ? imgPotYellow : null,
         "Potioni_vesi": typeof imgPotBlue !== "undefined" ? imgPotBlue : null,
+
+        //taso 3 esineet
+        "Lasikulho" : typeof imgGlassEmpty !== "undefined" ? imgGlassEmpty: null,
+        "Vesikulhossa" : typeof imgGlassBlue !== "undefined" ? imgGlassBlue: null,
+        "Keltuainen_Sekoitus" : typeof imgGlassYolk !== "undefined" ? imgGlassYolk: null,
+        "Taikina" : typeof imgGlassDough !== "undefined" ? imgGlassYolk: null,
+        "Kananmuna_alt" : typeof imgOneEgg !== "undefined" ? imgOneEgg: null,
+        "Juusto" : typeof imgCheese !== "undefined" ? imgCheese: null,
+        "Jauhot" : typeof imgFlour !== "undefined" ? imgFlour: null,
+        "Maitopurkki" : typeof imgMilk !== "undefined" ? imgMilk: null, 
+        "Juustokakku_alt" : typeof imgCheeseCake !== "undefined" ? imgCheeseCake: null,
+
+
+
         // Lisää tänne muita nimiä tarvittaessa:
 
     };

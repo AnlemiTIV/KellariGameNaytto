@@ -9,6 +9,7 @@ const img04 = new Image();
 const imgMixed = new Image();
 const imgboss1 = new Image();
 const imgboss2 = new Image();
+const imgboss3 = new Image();
 const imgavain = new Image();
 const imgBackground = new Image();
 const imgBackground2 = new Image();
@@ -33,6 +34,18 @@ const imgTrash = new Image();
 
 
 
+
+//Taso 3 itemit
+const imgGlassEmpty = new Image();
+const imgGlassBlue = new Image();
+const imgGlassYolk = new Image();
+const imgGlassDough = new Image();
+const imgOneEgg = new Image();
+const imgEggCarton = new Image();
+const imgMilk = new Image();
+const imgFlour = new Image();
+const imgCheese = new Image();
+const imgCheeseCake = new Image();
 
 
 
@@ -141,13 +154,25 @@ const locations = {
         },
         { // Stage 3
             id: 3,
-            background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground3.src},
+            background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground3},
             music: "tba",
-            boss: { x: 500, y: 250, width: 250, height: 250, value: "Boss_03", alive: true},
-            door: { x: 800, y: 400, width: 120, height: 200, value: "Door_03" },
+            boss: { x: 410, y: 170, width: 185, height: 185, value: imgboss3, alive: true},
+            door: { x: 380, y: 190, width: 70, height: 130, value: "Door_03" },
+            vesihana : {x: 900, y: 270, width: 140, height: 110, value: "vesihana"},
+            munakotelo: { x: 877, y: 252, width: 40, height: 30, value: imgEggCarton},
+            uuni : {x: 760, y: 250, width: 120, height: 120, value: "uuni"},
             images: [
-                { x: 100, y: 200, width: 230, height: 190, value: "Item_05", obtained: 0},
-                { x: 420, y: 470, width: 320, height: 200, value: "Item_06", obtained: 0}
+                { x: (canvasWidth/2 - 163), y: 363, width: 60, height: 40, value: imgGlassEmpty, name: "Lasikulho", obtained: 0}, //juusto, maito, jauho
+                { x: 850, y: 353, width: 65, height: 35, value: imgformula, name:"form_paperi", obtained: 0},
+                { x: 695, y: 243, width: 29, height: 29, value: imgCheese, name:"Juusto", obtained: 0},
+                { x: 280, y: 325, width: 40, height: 70, value: imgMilk, name:"Maitopurkki", obtained: 0},
+                { x: 819, y: 268, width: 28, height: 30, value: imgFlour, name:"Jauhot", obtained: 0},
+                {value: imgOneEgg, name:"Kananmuna_alt", obtained: 0},
+                {value: imgGlassBlue, name:"Vesikulhossa", obtained: 0},
+                {value: imgGlassYolk, name:"Keltuainen_Sekoitus", obtained: 0},
+                {value: imgGlassDough, name:"Taikina", obtained: 0},
+                {value: imgCheeseCake, name:"Juustokakku_alt", obtained: 0}
+                //Eli esineet joita ei näy kentässä, suurin osa roskakasasta, potionit klikkaamalla fuse tai vettä
             ]
         },
         { // Stage 4
@@ -173,11 +198,12 @@ img03.src = "kuvat/taso_2_kuvat/Lukittu_boxi.png";
 img04.src = "kuvat/taso_2_kuvat/Lukittu_boxi_alt.png";
 imgboss1.src = "kuvat/taso_1_kuvat/Boss_01.png";
 imgboss2.src = "kuvat/taso_2_kuvat/Boss_02.png";
+imgboss3.src = "kuvat/taso_3_kuvat/Boss_03.png";
 imgMixed.src = "kuvat/Mixed_01.png";
 imgavain.src = "kuvat/key_item.png";
 imgBackground.src = "kuvat/taso_1_kuvat/Taso_1.png";
 imgBackground2.src = "kuvat/taso_2_kuvat/Taso_2.png";
-imgBackground3.src = "kuvat/taso_3_kuvat/Taso_3.png";
+imgBackground3.src = "kuvat/taso_3_kuvat/Taso_3_alt2.png";
 imgBackground4.src = "kuvat/taso_4_kuvat/Taso_4.png";
 imgformula.src = "kuvat/Formula_paperi.png";
 imgFormula1.src = "kuvat/taso_1_kuvat/Taso1Formula.png";
@@ -192,19 +218,33 @@ imgPotGreen.src = "kuvat/taso_1_kuvat/Potioni_vihrea.png";
 imgSpidWeb.src = "kuvat/taso_1_kuvat/Seitti.png";
 imgMoldFood.src = "kuvat/taso_1_kuvat/mata_paprika.png";
 imgTrash.src = "kuvat/taso_1_kuvat/Roskakasa_placeholder.png";
+
+imgGlassEmpty.src = "kuvat/taso_3_kuvat/Lasikulho.png";
+imgGlassBlue.src = "kuvat/taso_3_kuvat/Vesikulhossa.png";
+imgGlassYolk.src = "kuvat/taso_3_kuvat/Keltuainen_Sekoitus.png";
+imgGlassDough.src = "kuvat/taso_3_kuvat/Taikina.png";
+imgOneEgg.src = "kuvat/taso_3_kuvat/Kananmuna_alt.png";
+imgEggCarton.src = "kuvat/taso_3_kuvat/Munakotelo_alt.png";
+imgCheese.src = "kuvat/taso_3_kuvat/Juusto.png";
+imgFlour.src = "kuvat/taso_3_kuvat/Jauhot.png";
+imgMilk.src = "kuvat/taso_3_kuvat/Maitopurkki.png";
+imgCheeseCake.src = "kuvat/taso_3_kuvat/Juustokakku_alt.png"; 
+
 //image onload data
 function genImageOnload(){
     
     document.addEventListener("DOMContentLoaded", function() {
         
         imgBackground.onload = function() { refreshCanvas(); }    
-        imgBackground2.onload = function() { refreshCanvas(); }  
+        imgBackground2.onload = function() { refreshCanvas(); }
+        imgBackground3.onload = function() { refreshCanvas(); }   
         img01.onload = function() { refreshCanvas(); }    
         img02.onload = function() { refreshCanvas(); }
         img03.onload = function() { refreshCanvas(); }  
         img04.onload = function() { refreshCanvas(); }    
         imgboss1.onload = function() { refreshCanvas(); }  
-        imgboss2.onload = function() { refreshCanvas(); }    
+        imgboss2.onload = function() { refreshCanvas(); }
+        imgboss3.onload = function() { refreshCanvas(); }     
         imgavain.onload = function() { refreshCanvas(); }
         imgformula.onload = function() { refreshCanvas(); }
         imgFormula1.onload = function() { refreshCanvas(); }
@@ -219,6 +259,16 @@ function genImageOnload(){
         imgSpidWeb.onload = function() { refreshCanvas(); }
         imgMoldFood.onload = function() { refreshCanvas(); }
         imgTrash.onload = function() { refreshCanvas(); }
+        imgGlassEmpty.onload = function() { refreshCanvas(); } //Taso 3 esineet
+        imgGlassBlue.onload = function() { refreshCanvas(); }
+        imgGlassYolk.onload = function() { refreshCanvas(); }
+        imgGlassDough.onload = function() { refreshCanvas(); }
+        imgOneEgg.onload = function() { refreshCanvas(); }
+        imgEggCarton.onload = function() { refreshCanvas(); }
+        imgCheese.onload = function() { refreshCanvas(); }
+        imgFlour.onload = function() { refreshCanvas(); }
+        imgMilk.onload = function() { refreshCanvas(); }
+        imgCheeseCake.onload = function() { refreshCanvas(); }
 
     });
 };

@@ -9,7 +9,11 @@ class Recipe {
 const recipes = [
     new Recipe(["Item_01", "Item_02"], "MixTest"),
     new Recipe(["Potioni_vihrea", "seitti"], "Potioni_Pinkki"),
-    new Recipe(["Potioni_Pinkki", "Potioni_vesi","mata_paprika"], "Potioni_keltainen"),
+    new Recipe(["Potioni_Pinkki", "Potioni_vesi", "mata_paprika"], "Potioni_keltainen"),
+    //Taso 3 reseptit
+    new Recipe(["Juusto", "Vesikulhossa", "Kananmuna_alt"], "Keltuainen_Sekoitus"),
+    new Recipe(["Jauhot", "Keltuainen_Sekoitus"], "Taikina"),
+    //new Recipe(["Taikina", "liekki"], "Juustokakku_alt"), //en tiedä pitääkö mukaanlukea vai sama idea kuin roskakasalla toiminta kentässä?
 ];
 
 // apu: laskee arvon esiintymät taulukossa
