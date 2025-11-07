@@ -607,3 +607,7 @@ function stepFade(timestamp) {
         return;
     }
 }
+
+setTimeout(() => {
+    refreshCanvas();
+}, 1000);
