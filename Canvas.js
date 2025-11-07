@@ -7,6 +7,7 @@ let useless;
 let formulaHallussa = false;
 let avainHallussa = false; 
 let tasoNumero = 1; 
+playBGM(`taso${tasoNumero}BGM`);
 let inNextLevel = false; //mustalle ruudulle, on "true" sen aikana kun ovesta klikataan, menee "false" kun refreshCanvasissa
 
 //Globaali tavaravarasto, missä esineet pidetään.
@@ -22,10 +23,9 @@ let isMixingWindowOpen = false; //tällä voi säätää kaiken muun piilottamis
 genImageOnload();
 
 function refreshCanvas() {
-
     //resetoi canvas ja canvas:in tausta
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
+    
     // End screen: jos peli etenee tason 3 yli, näytetään musta ruutu keskitetyllä tekstillä
     if (tasoNumero > 3) {
         // Täysi musta tausta
@@ -37,16 +37,21 @@ function refreshCanvas() {
         ctx.font = "36px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("Yo'rue Winner!", canvasWidth / 2, canvasHeight / 2);
+        ctx.fillText("Pääsit pakoon!", canvasWidth / 2, canvasHeight / 5);
+        ctx.fillText("Kiitos pelailusta", canvasWidth / 2, canvasHeight / 2);
+        ctx.fillText("Tehty:", canvasWidth / 2, canvasHeight / 2 * 1.3);
+        ctx.fillText("Antti Lehikoinen ja Anton Särkkä", canvasWidth / 2, canvasHeight / 2 * 1.5);
 
-       
+
         if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
             ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            playSound("game_over")
         }
 
         return;
     }
+    // reset flag if returning to playable levels
 
     const stageNow = locations.stages[tasoNumero - 1];
 
@@ -154,6 +159,7 @@ function refreshCanvas() {
     let invIndex = 0;
     for (let i = 0; i < inventory.length; i++) {
         const itemName = inventory[i];
+        console.log(inventory.length)
         if (!itemName || itemName === 0) continue; // tyhjä paikka
 
         const drawImg = itemImageMap[itemName];
@@ -220,7 +226,7 @@ function handleFirstScreen(x, y){
 
     // Kenttä rippuen tasonumerosta
     const stageNow = locations.stages[tasoNumero - 1];
-    
+
     //Item tarkistus
     for (let i = 0; i < stageNow.images.length; i++) {
         const item = stageNow.images[i];
@@ -233,6 +239,7 @@ function handleFirstScreen(x, y){
             if (item.name === "form_paperi") {
                 item.obtained = 1;
                 formulaHallussa = true;
+                playSound("item_click");
                 refreshCanvas();
                 return;
             }
@@ -243,7 +250,7 @@ function handleFirstScreen(x, y){
             if (item.name === "form_paperi") {
                 formulaHallussa = true;
             }
-
+            if (typeof playSound === "function") playSound("item_click");
             refreshCanvas();
             return;
         }
@@ -274,6 +281,7 @@ function handleFirstScreen(x, y){
         const foundItem = stageNow.trash.items.shift();
         inventory[emptyIdx] = foundItem;
         console.log("Löysit roskiksesta:", foundItem);
+        if (typeof playSound === "function") playSound("item_click");
         refreshCanvas();
         return;
     }
@@ -303,6 +311,7 @@ function handleFirstScreen(x, y){
         const foundItem = stageNow.munakotelo.items.shift();
         inventory[emptyIdx] = foundItem;
         console.log("Löysit munakotelosta:", foundItem);
+        if (typeof playSound === "function") playSound("item_click");
         refreshCanvas();
         return;
     }
@@ -319,6 +328,8 @@ function handleFirstScreen(x, y){
             // korvataan ensimmäinen Empty_Pot vesipotionilla
             inventory[emptyIdx] = "Potioni_vesi";
             console.log("Empty_Pot -> Potioni_vesi");
+            playSound("vesihana_click")
+            if (typeof playSound === "function") playSound("item_click");
             refreshCanvas();
             return;
         }
@@ -358,6 +369,7 @@ function handleFirstScreen(x, y){
                     stageNow.images.push(newKey);
                 }
 
+                if (typeof playSound === "function") playSound("item_click");
                 refreshCanvas();
                 return;
             }
@@ -374,6 +386,7 @@ function handleFirstScreen(x, y){
         if (emptyIdx !== -1) {
             inventory[emptyIdx] = "Yarnball";
             stageNow.lockbox = null;
+            if (typeof playSound === "function") playSound("item_click");
             refreshCanvas();
         }
     }
@@ -391,6 +404,7 @@ function handleFirstScreen(x, y){
         if (emptyIdx !== -1) {
             // korvataan ensimmäinen Empty_Pot vesipotionilla
             inventory[emptyIdx] = "Vesikulhossa";
+            playSound("vesihana_click")
             console.log("Lasikulho -> Vesikulhossa");
             refreshCanvas();
             return;
@@ -409,6 +423,7 @@ function handleFirstScreen(x, y){
             // korvataan ensimmäinen Empty_Pot vesipotionilla
             inventory[emptyIdx] = "Juustokakku_alt";
             console.log("Taikina -> Juustokakku_alt");
+            playSound("oven_click");
             refreshCanvas();
             return;
         }
@@ -417,7 +432,7 @@ function handleFirstScreen(x, y){
     // Boss Poisto test
     // Check boss clicks (if applicable)
     const boss1 = locations.stages[tasoNumero - 1].boss;
-    if (
+if (
         boss1.alive === true &&
         x >= boss1.x && x <= boss1.x + boss1.width &&
         y >= boss1.y && y <= boss1.y + boss1.height
@@ -439,21 +454,30 @@ function handleFirstScreen(x, y){
             console.log("Bossi on voitettu!");
             inventory.unshift(0);
             avainHallussa = true;
+            playSound("boss_click_success");
             refreshCanvas();
             return;
+        } else {
+            playSound("boss_click_fail")
         }
-    }
+   } 
 
-    //oven klikkaus, josta tasosta siirtyminen toiseen?
+    // Oven klikkaus -> soitto ja level transition
     if (
         avainHallussa === true &&
         x >= stageNow.door.x && x <= stageNow.door.x + stageNow.door.width &&
         y >= stageNow.door.y && y <= stageNow.door.y + stageNow.door.height
-    ){
-        // Käynnistä fade + tasojen vaihto (startLevelTransition hoitaa inventorin resetin)
+    ) {
+        if (typeof playSound === "function") playSound("door_click");
         startLevelTransition(tasoNumero + 1);
-     }
- } 
+    }
+    // ...existing code...
+    // Piirrä fade overlay päällimmäiseksi (jos käynnissä)
+    if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
+        ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    }
+} 
 
 function handleMixingScreen(x, y){
     console.log(x, y);
@@ -527,7 +551,7 @@ function handleMixingScreen(x, y){
 
 let fadeState = 'idle'; // 'idle' | 'fadingOut' | 'fadingIn'
 let fadeAlpha = 0;
-let fadeDuration = 1000;
+let fadeDuration = 4000;
 let fadeStartTime = 0;
 let fadeTargetLevel = null;
 
@@ -555,6 +579,7 @@ function stepFade(timestamp) {
             // Vaihdetaan taso vasta kun ruutu on täysin musta
             if (typeof fadeTargetLevel === "number") {
                 tasoNumero = fadeTargetLevel;
+                playBGM(`taso${tasoNumero}BGM`);
                 // tehdään samat resetit kuin aiemmin oven klikkauksessa tehtiin
                 inventory = [0, 0, 0, 0, 0, 0];
                 avainHallussa = false;

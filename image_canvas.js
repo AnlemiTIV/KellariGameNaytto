@@ -121,6 +121,69 @@ const locations = {
 //1. tasosta 2. tasoon sen mukaan minkä arvoinen kenttänumero muuttuja on, numeron päivitettyä funktio uudelleen ladataan?
 //Lisää sitten tarkemmat koordinaatit muokatuista tiedostoista mitkä jäsen päivittänyt
 
+const sounds = {};
+let currentBGM = null;
+const soundFiles = {
+    item_click: "Musiikki/Aanieffektit/Button.mp3",            // esineen tai nappulan klikkaus
+    boss_click_fail: "Musiikki/Aanieffektit/punch-04-383965.mp3",     // pomon napautus ilman aseita
+    boss_click_success: "Musiikki/Aanieffektit/explosion-9-340460.mp3", // pomon kukistus
+    door_click: "Musiikki/Aanieffektit/key-open-door-45516.mp3",     // oven avaus / avain käytetty
+    mix_success: "Musiikki/Aanieffektit/cute-level-up-3-189853.mp3",  // oikea miksaus
+    mix_fail: "Musiikki/Aanieffektit/negative_beeps-6008.mp3",       // väärä miksaus
+    hint_click: "Musiikki/Aanieffektit/announcement-sound-5-21465.mp3", // formula/hint
+    game_over: "Musiikki/Aanieffektit/notification-8-337830.mp3",      // end-screen
+    vesihana_click: "Musiikki/Aanieffektit/pouring-water-fast-into-a-glass-107902.mp3",   // vesihana
+    oven_click: "Musiikki/Aanieffektit/short-fire-whoosh_1-317280.mp3",
+    taso1BGM: "Musiikki/MusiikkiKentat/fable-loop-372218.mp3",
+    taso2BGM: "Musiikki/MusiikkiKentat/halloween-background-music-413525.mp3",
+    taso3BGM: "Musiikki/MusiikkiKentat/just-snooping-around-funny-384399.mp3",
+
+
+
+
+};
+
+for (const key in soundFiles) {
+    try {
+        const a = new Audio(soundFiles[key]);
+        a.preload = "auto";
+        sounds[key] = a;
+    } catch (e) {
+        console.warn("Audio load failed:", soundFiles[key], e);
+    }
+}
+
+function playSound(name, opts = {}) {
+
+    const s = sounds[name];
+    if (!s) return;
+    try {
+        s.currentTime = 0;
+        if (typeof opts.volume === "number") s.volume = opts.volume;
+        s.play().catch(err => console.warn("playSound error", name, err));
+    } catch (e) {
+        console.warn("playSound exception", name, e);
+    }
+     
+}
+function playBGM(name, opts = {}) {
+    // Jos musiikki soi jo, pysäytetään se
+    if (currentBGM && !currentBGM.paused) {
+        currentBGM.pause();
+        currentBGM.currentTime = 0;
+    }
+
+    const bgm = sounds[name];
+    if (!bgm) return;
+
+    bgm.loop = true; // toistetaan jatkuvasti
+    bgm.volume = typeof opts.volume === "number" ? opts.volume : 0.4; // oletusvolume
+    bgm.play().catch(err => console.warn("playBGM error", name, err));
+
+    currentBGM = bgm;
+}
+
+
 
 
 // käytä images esineihiin, mitkä menevät inventoriin!
@@ -129,7 +192,7 @@ const locations = {
         { // Stage 1
             id: 1,
             background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground},
-            music: "tba",
+            music: soundFiles.taso1BGM,
             boss: { x: 400, y: 300, width: 250, height: 250, value: imgboss1, alive: true},
             door: { x: 450, y: 300, width: 170, height: 160, value: "Door_01" },
             trash: { x: 60, y: 380, width: 300, height: 200, value: imgTrash},
@@ -147,7 +210,7 @@ const locations = {
         { // Stage 2
             id: 2,
             background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground2},
-            music: "tba",
+            music: soundFiles.taso2BGM,
             boss: { x: 570, y: 200, width: 250, height: 250, value: imgboss2, alive: true},
             door: { x: 800, y: 200, width: 120, height: 200, value: "Door_02" },
             kulho: { x: 370, y: 145, width: 50, height: 40, value: imgKulho},
@@ -164,7 +227,7 @@ const locations = {
         { // Stage 3
             id: 3,
             background: { x: 0, y: 0, width: canvasWidth, height: canvasHeight, value: imgBackground3},
-            music: "tba",
+            music: soundFiles.taso3BGM,
             boss: { x: 410, y: 170, width: 185, height: 185, value: imgboss3, alive: true},
             door: { x: 380, y: 190, width: 70, height: 130, value: "Door_03" },
             vesihana : {x: 900, y: 270, width: 140, height: 110, value: "vesihana"},

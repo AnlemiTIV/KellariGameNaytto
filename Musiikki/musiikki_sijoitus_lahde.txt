@@ -1,23 +1,16 @@
 Lähde/Sivusto: Pixabay.com (Dungeon)
 
-0. Tutoriaali, taso 1 musiikki - Fable
+Taso 1 musiikki - Fable
 . Ebunny
-. Music by Bugs Bunny
 
-1. Taso - Jazz Funny Quirky Sketch
+
+2. Taso - halloween bkacground
  . Denis-Pavlov-Music
 
-2. Taso - Eccentric Quirky Sneaky Music
- . HitsLab
-   TAI
+3. Taso 
    Just Snooping Around - Funny
- . geoffharvey (by Geoff Harvey)
 
-3. Taso - Lazy Sunday Morning / Lo-fi Music
- . tramp963, Music by John Tramp
 
-4. Taso - original_soundtrack
- . Viacheslav Starostin
 
 ---
 
@@ -28,10 +21,6 @@ Lähde/Sivusto: Pixabay.com (Dungeon)
  . Mouse click - MatthewVakaliuk73627
  . Button - Universfield (tämä) - alkuperäinen tiedostonimi: button-124476
 
-2. Aseen käyttö -
- HUOM! - Alkuperäinen ase idea kenties ei tule käyttöön(?), joten tämän kenties joutuu jättämään pois
- . laser gun - freesound-community - alkuperäinen tiedostonimi: laser-gun-41857
-
 3. Pomo/Ökelö kukistettu -
  . Explosion 9 - b32baquv5u- alkuperäinen tiedostonimi: explosion-9-340460
 
@@ -40,17 +29,14 @@ Lähde/Sivusto: Pixabay.com (Dungeon)
 
 5. Isku ökelöstä jos klikkaat ilman asetta -
  . Punch 04 - Universfield - alkuperäinen tiedostonimi: punch-04-383965
-
-5.5. Isku pikku kummituksista
- . Ice Water Shift Tall Glass 1 - floraphonic - alkuperäinen tiedostonimi: ice-water-shift-tall-glass-1-185135
-
+ 
 6. Oikea yhdistelmä -
  . Cute Level Up 3 - floraphonic - alkuperäinen tiedostonimi: cute-level-up-3-189853
 
 7. Väärä yhdistelmä -
  . negative_beeps - freesound_community - alkuperäinen tiedostonimi: negative-beeps-6008
 
-8. Vihje äänieffekti (tutoriaali, ! notice)
+8. Vihje äänieffekti (Formula paperi)
  . Announcement Sound 5 - SergeQuadro, Sergei Chetvertnykh - alkuperäinen tiedostonimi: announcement -sound-5-21465
 
 9. Hävisit pelin (game over) -

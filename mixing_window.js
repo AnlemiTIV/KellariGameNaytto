@@ -289,6 +289,7 @@ function createMixingWindow() {
 
     // Jos pelaaja avannut form kuvan, piirretään overlay (keskelle)
     if (window.showingFormula) {
+        playSound("hint_click");
         // valitse tasokohtainen kuva
         let formulaImg = imgFormula1; // oletus
         if (typeof tasoNumero !== "undefined") {
@@ -381,20 +382,22 @@ function handleMixingScreen(x, y) {
 
                     if (typeof removeIngredientsFromSlots === "function") {
                         removeIngredientsFromSlots(recipe.ingredients);
+                        playSound("mix_success");
                     } else {
 
                         for (const ing of recipe.ingredients) {
                             const idx = mixingSlots.indexOf(ing);
-                            if (idx !== -1) mixingSlots[idx] = 0;
+                            if (idx !== -1) mixingSlots[idx] = 0;                            
                         }
                     }
                     mixingResult = recipe.result;
                     mixingScreenResult[0] = recipe.result;
-                    createMixingWindow();
+                    createMixingWindow();                   
                     return;
                 }
             }
         }
+        playSound("mix_fail");
         console.log("Ei sopivaa reseptiä mixing-sloteille.");
         return;
     }
