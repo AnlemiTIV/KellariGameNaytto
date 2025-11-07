@@ -38,7 +38,6 @@ const imgGum = new Image();
 const imgRuler = new Image();
 const imgAvain2 = new Image();
 const imgYarnball = new Image();
-
 //Taso 3 itemit
 const imgGlassEmpty = new Image();
 const imgGlassBlue = new Image();
@@ -52,74 +51,12 @@ const imgCheese = new Image();
 const imgCheeseCake = new Image();
 
 
-
-/* const imgboss2 = new Image();
-const img03 //kenttä 2
-const img04 = new Image();
-const img05 = new Image();
-*/
 //Canvas info, Canvas pohjatiedot
 let body = document.width
 let canvas01 = document.getElementById("canvas01");
 let ctx = canvas01.getContext("2d");
 let canvasWidth = canvas01.width;
 let canvasHeight = canvas01.height
-
-//Location data
-/*
-const locations = {
-    Img1: {
-        x: (canvasWidth/2 - 120),
-        y: 150,
-        width: 230,
-        height: 230 
-    },
-
-    // Image 02 location data (esim. oikealle item_01:stä)
-    Img2: {
-        x: (canvasWidth/2 + 120),
-        y: 150,
-        width: 230,
-        height: 230
-    },
-
-    boss: {
-        x: (canvasWidth/2 - 150),
-        y: 20,
-        width: 300,
-        height: 200,
-        alive: true
-    },
-
-    background: {
-        x: 0,
-        y: 0,
-        width: canvasWidth,
-        height: canvasHeight 
-    },
-};
-*/
-
-/*const soundEffects = {
- stages: [
-       { // All_Stages
-          item_click: value: item_click.src,
-          button_click: value: button_click.src,
-          boss_click_fail: value: boss_click_1.src,
-          boss_click_success: value: boss_click_2.src,
-          door_click: value: door_click.src,
-          mix_fail: value: mix_fail.src,
-          mix_success: mix_success.src,
-          game_over: game_over.src,
-          hint_click: hint_click.src,
-          minighost_click: minighost_click.src
-          }
-        ]
-    }
-*/
-
-//1. tasosta 2. tasoon sen mukaan minkä arvoinen kenttänumero muuttuja on, numeron päivitettyä funktio uudelleen ladataan?
-//Lisää sitten tarkemmat koordinaatit muokatuista tiedostoista mitkä jäsen päivittänyt
 
 const sounds = {};
 let currentBGM = null;
@@ -137,9 +74,6 @@ const soundFiles = {
     taso1BGM: "Musiikki/MusiikkiKentat/fable-loop-372218.mp3",
     taso2BGM: "Musiikki/MusiikkiKentat/halloween-background-music-413525.mp3",
     taso3BGM: "Musiikki/MusiikkiKentat/just-snooping-around-funny-384399.mp3",
-
-
-
 
 };
 
@@ -182,9 +116,6 @@ function playBGM(name, opts = {}) {
 
     currentBGM = bgm;
 }
-
-
-
 
 // käytä images esineihiin, mitkä menevät inventoriin!
 const locations = {
@@ -244,7 +175,6 @@ const locations = {
                 {value: imgGlassYolk, name:"Keltuainen_Sekoitus", obtained: 0},
                 {value: imgGlassDough, name:"Taikina", obtained: 0},
                 {value: imgCheeseCake, name:"Juustokakku_alt", obtained: 0}
-                //Eli esineet joita ei näy kentässä, suurin osa roskakasasta, potionit klikkaamalla fuse tai vettä
             ]
         },
         { // Stage 4
@@ -299,8 +229,6 @@ imgGum.src = "kuvat/taso_2_kuvat/purkka.png";
 imgRuler.src = "kuvat/taso_2_kuvat/Viivoitin.png";
 imgAvain2.src = "kuvat/taso_2_kuvat/Avain_taso2.png";
 imgYarnball.src = "kuvat/taso_2_kuvat/yarnball.png";
-
-
 // Taso 3 itemit
 imgGlassEmpty.src = "kuvat/taso_3_kuvat/Lasikulho.png";
 imgGlassBlue.src = "kuvat/taso_3_kuvat/Vesikulhossa.png";
@@ -312,7 +240,6 @@ imgCheese.src = "kuvat/taso_3_kuvat/Juusto.png";
 imgFlour.src = "kuvat/taso_3_kuvat/Jauhot.png";
 imgMilk.src = "kuvat/taso_3_kuvat/Maitopurkki.png";
 imgCheeseCake.src = "kuvat/taso_3_kuvat/Juustokakku_alt.png"; 
-
 
 //image onload data
 function genImageOnload(){
@@ -352,9 +279,8 @@ function genImageOnload(){
         imgRuler.onload = function() { refreshCanvas(); }
         imgAvain2.onload = function() { refreshCanvas(); }
         imgYarnball.onload = function() { refreshCanvas(); }
-        
-
-        imgGlassEmpty.onload = function() { refreshCanvas(); } //Taso 3 esineet
+        //Taso 3 esineet
+        imgGlassEmpty.onload = function() { refreshCanvas(); } 
         imgGlassBlue.onload = function() { refreshCanvas(); }
         imgGlassYolk.onload = function() { refreshCanvas(); }
         imgGlassDough.onload = function() { refreshCanvas(); }
@@ -367,15 +293,3 @@ function genImageOnload(){
     
     });
 };
-
-/*for (const key in img) {
-  img[key].onload = function() {
-    refreshCanvas();
-  };
-}
-*/
-
-//Vaihtoehto jos tarvetta
-//export {images, locations, genImageOnLoad};
-
-//loadImages() //or genImageOnload()

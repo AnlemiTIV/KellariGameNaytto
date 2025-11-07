@@ -99,7 +99,6 @@ function createMixingWindow() {
     // result-slotin alue globaalisti klikkauksia varten
     window.resultSlotArea = { x: resultInnerX, y: resultInnerY, w: resultInnerW, h: resultInnerH };
 
-
     // 
     if (mixingResult) {
         if (mixingResult === "Potioni_Pinkki") {
@@ -173,8 +172,6 @@ function createMixingWindow() {
         "Jauhot" : typeof imgFlour !== "undefined" ? imgFlour: null,
         "Maitopurkki" : typeof imgMilk !== "undefined" ? imgMilk: null, 
         "Juustokakku_alt" : typeof imgCheeseCake !== "undefined" ? imgCheeseCake: null,
-
-
 
         // Lisää tänne muita nimiä tarvittaessa:
 
@@ -255,12 +252,9 @@ function createMixingWindow() {
 
     window.mixWindowData = {
 
-
         invBaseX, invBaseY,
 
-
         mixSlotsBaseX, mixSlotsBaseY
-
 
     };
 
@@ -364,8 +358,6 @@ function handleMixingScreen(x, y) {
         createMixingWindow();
         return;
     }
-
-
 
     //AS: Tämä koodi tehty tekoälyllä, voi sisältää virheitä. Koodi korjaa tavarat, että ei ole painamattomia kuvia. 
     // Sekoita-painikkeen käsittely. 

@@ -42,7 +42,6 @@ function refreshCanvas() {
         ctx.fillText("Tehty:", canvasWidth / 2, canvasHeight / 2 * 1.3);
         ctx.fillText("Antti Lehikoinen ja Anton Särkkä", canvasWidth / 2, canvasHeight / 2 * 1.5);
 
-
         if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
             ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -56,8 +55,6 @@ function refreshCanvas() {
     const stageNow = locations.stages[tasoNumero - 1];
 
     ctx.drawImage(stageNow.background.value, 0, 0, canvasWidth, canvasHeight);
-
-
 
     if (isMixingWindowOpen === false){
        
@@ -112,7 +109,6 @@ function refreshCanvas() {
     }
 
     // Stage 2
-
     if (stageNow.kulho) {
         ctx.drawImage(stageNow.kulho.value, stageNow.kulho.x, stageNow.kulho.y, stageNow.kulho.width, stageNow.kulho.height);
     }
@@ -120,8 +116,6 @@ function refreshCanvas() {
     if (stageNow.lockbox) {
         ctx.drawImage(stageNow.lockbox.value, stageNow.lockbox.x, stageNow.lockbox.y, stageNow.lockbox.width, stageNow.lockbox.height);
     }
-
-
 
     // Piirrä munakotelo taso 3
     if (stageNow.munakotelo) {
@@ -195,8 +189,7 @@ canvas01.addEventListener("click", (e) => {
     const mouseX = e.offsetX;
     const mouseY = e.offsetY;
 
-    //AL 10.10.25 - Jos Mixaus painikkeesta painetaan inventorin vieressä, siirrytään Mixaus ikkunaan
-    //1340, 610, 130, 120);
+    //AL 10.10.25 - Jos Mixaus painikkeesta painetaan inventorin vieressä, siirrytään Mixaus ikkunaan //1340, 610, 130, 120);
 
     if (isMixingWindowOpen === false) {
         handleFirstScreen(mouseX, mouseY);
@@ -389,9 +382,7 @@ function handleFirstScreen(x, y){
             if (typeof playSound === "function") playSound("item_click");
             refreshCanvas();
         }
-    }
-    
-        
+    }        
 
     //3. taso, kun klikataan vesihanasta, saadaan vettä tyhjään lasikulhoon
     if (stageNow.vesihana &&
@@ -429,8 +420,7 @@ function handleFirstScreen(x, y){
         }
     }
 
-    // Boss Poisto test
-    // Check boss clicks (if applicable)
+    // Boss Poisto test // Check boss clicks (if applicable)
     const boss1 = locations.stages[tasoNumero - 1].boss;
 if (
         boss1.alive === true &&
@@ -471,8 +461,7 @@ if (
         if (typeof playSound === "function") playSound("door_click");
         startLevelTransition(tasoNumero + 1);
     }
-    // ...existing code...
-    // Piirrä fade overlay päällimmäiseksi (jos käynnissä)
+    // ...existing code...// Piirrä fade overlay päällimmäiseksi (jos käynnissä)
     if (typeof fadeAlpha !== "undefined" && fadeAlpha > 0) {
         ctx.fillStyle = `rgba(0,0,0,${fadeAlpha})`;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -518,8 +507,7 @@ function handleMixingScreen(x, y){
                     }
                     return;
                 }
-            }
-            
+            }            
         }
         
     // Mixaus slotista takaisin inventoriin  // (i * 175) + 370, 250, 148, 127);

@@ -16,7 +16,6 @@ const recipes = [
     //Taso 3 reseptit
     new Recipe(["Juusto", "Vesikulhossa", "Kananmuna_alt"], "Keltuainen_Sekoitus"),
     new Recipe(["Jauhot", "Keltuainen_Sekoitus"], "Taikina"),
-    //new Recipe(["Taikina", "liekki"], "Juustokakku_alt"), //en tiedä pitääkö mukaanlukea vai sama idea kuin roskakasalla toiminta kentässä?
 ];
 
 // apu: laskee arvon esiintymät taulukossa
